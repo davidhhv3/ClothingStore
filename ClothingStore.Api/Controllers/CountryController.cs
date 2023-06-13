@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ClothingStore.Api.Responses;
 using ClothingStore.Core.DTOs;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
@@ -23,7 +24,8 @@ namespace ClothingStore.Api.Controllers
         {
             var countries = _contryService.GetCountries();
             var countriesDtos = _mapper.Map<IEnumerable<CountryDto>>(countries);
-            return Ok(countriesDtos);
+            var response = new ApiResponse<IEnumerable<CountryDto>>(countriesDtos);
+            return Ok(response);
         }
 
         [HttpGet("{id}")]
@@ -31,7 +33,8 @@ namespace ClothingStore.Api.Controllers
         {
             var country = await _contryService.GetCountry(id);
             var countryDto = _mapper.Map<CountryDto>(country);
-            return Ok(countryDto);
+            var response = new ApiResponse<CountryDto>(countryDto);
+            return Ok(response);
         }
         [HttpPost]
         public async Task<IActionResult> Post(CountryDto countryDto)
@@ -39,7 +42,8 @@ namespace ClothingStore.Api.Controllers
             var country = _mapper.Map<Country>(countryDto);
             await _contryService.InsertCountry(country);
             countryDto = _mapper.Map<CountryDto>(country);
-            return Ok(countryDto);
+            var response = new ApiResponse<CountryDto>(countryDto);
+            return Ok(response);
         }
         [HttpPut]
         public async Task<IActionResult> Put(int id, CountryDto countryDto)
@@ -47,14 +51,17 @@ namespace ClothingStore.Api.Controllers
             var country = _mapper.Map<Country>(countryDto);
             country.Id = id;
             var result = await _contryService.UpdateCountry(country);
-            return Ok(result);
+            var response = new ApiResponse<bool>(result);
+            return Ok(response);
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _contryService.DeleteCountry(id);
-            return Ok(result);
+            var response = new ApiResponse<bool>(result);
+            return Ok(response);
         }
+
     }
 
 }
