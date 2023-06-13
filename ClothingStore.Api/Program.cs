@@ -10,27 +10,9 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
 builder.Services.AddDbContexts(builder.Configuration);
 builder.Services.AddServices();
-
-//builder.Services.AddMvc().
-//builder.Services.AddFluentValidationAutoValidation();
-//builder.Services
-//    .AddFluentValidationAutoValidation()
-//    .AddValidatorsFromAssembly(AppDomain.CurrentDomain.GetAssemblies()[0]);
-
-builder.Services.AddMvc(options =>
-{
-}).AddFluentValidation(options =>
-{
-    options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-});
-
-
-
-
-//options.RegisterValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
-
-
-
+builder.Services
+    .AddFluentValidationAutoValidation()
+    .AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 
 
