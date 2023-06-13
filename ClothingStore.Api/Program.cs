@@ -3,11 +3,8 @@ using ClothingStore.Infrastructure.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllers();
-
-
-
 builder.Services.AddDbContexts(builder.Configuration);
 builder.Services.AddServices();
 
