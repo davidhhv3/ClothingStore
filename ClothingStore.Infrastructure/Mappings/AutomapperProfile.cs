@@ -9,6 +9,7 @@ namespace ClothingStore.Infrastructure.Mappings
         public AutomapperProfile()
         {
             CreateMap<Country, CountryDto>().ReverseMap();
+            CreateMap<Security, SecurityDto>().ReverseMap();
         }
     }
 

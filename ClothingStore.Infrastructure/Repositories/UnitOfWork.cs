@@ -7,12 +7,14 @@ namespace ClothingStore.Infrastructure.Repositories
     {
         private readonly ClothingStoreContext _context;
         private readonly ICountryRepository _countryRepository;
+        private readonly ISecurityRepository _securityRepository;
 
         public UnitOfWork(ClothingStoreContext context)
         {
             _context = context;
         }
         public ICountryRepository CountryRepository => _countryRepository ?? new CountryRepository(_context);
+        public ISecurityRepository SecurityRepository => _securityRepository ?? new SecurityRepository(_context);
 
         public void Dispose()
         {

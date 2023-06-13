@@ -2,7 +2,10 @@
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.Services;
 using ClothingStore.Infrastructure.Data;
+using ClothingStore.Infrastructure.Interfaces;
+using ClothingStore.Infrastructure.Options;
 using ClothingStore.Infrastructure.Repositories;
+using ClothingStore.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,6 +17,7 @@ namespace ClothingStore.Infrastructure.Extensions
         public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
         {
             services.Configure<PaginationOptions>(options => configuration.GetSection("Pagination").Bind(options));
+            services.Configure<PasswordOptions>(options => configuration.GetSection("PasswordOptions").Bind(options));
             return services;
         }
 
@@ -30,8 +34,9 @@ namespace ClothingStore.Infrastructure.Extensions
         {
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IContryService, CountryService>();
+            services.AddTransient<ISecurityService, SecurityService>();
+            services.AddSingleton<IPasswordService, PasswordService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
-
             return services;
         }
 
