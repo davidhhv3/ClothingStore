@@ -1,16 +1,21 @@
-﻿using ClothingStore.Core.Entities;
+﻿using ClothingStore.Core.CustomEntities;
+using ClothingStore.Core.Entities;
 using ClothingStore.Core.Exceptions;
 using ClothingStore.Core.Interfaces;
+using ClothingStore.Core.QueryFilters;
+using Microsoft.Extensions.Options;
 
 namespace ClothingStore.Core.Services
 {
     public class CountryService : IContryService
     {
+        private readonly PaginationOptions _paginationOptions;
         private readonly IUnitOfWork _unitOfWork;
 
-        public CountryService(IUnitOfWork unitOfWork)
+        public CountryService(IUnitOfWork unitOfWork, IOptions<PaginationOptions> options)
         {
             _unitOfWork = unitOfWork;
+            _paginationOptions = options.Value;
         }
         public async Task<bool> DeleteCountry(int id)
         {
@@ -22,11 +27,15 @@ namespace ClothingStore.Core.Services
         {
             return await _unitOfWork.CountryRepository.GetById(Id);
         }
-        public List<Country> GetCountries()
+        public PagedList<Country> GetCountries(CountryQueryFilter filters)
         {
+            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
+            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
             var countries = _unitOfWork.CountryRepository.GetAll().ToList();
-            return countries;
+            var pagedCountries = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
+            return pagedCountries;
         }
+
         public async Task InsertCountry(Country country)
         {
             if (country.Name.Contains("sexo"))

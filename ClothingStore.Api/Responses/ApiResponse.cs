@@ -1,4 +1,6 @@
-﻿namespace ClothingStore.Api.Responses
+﻿using ClothingStore.Core.CustomEntities;
+
+namespace ClothingStore.Api.Responses
 {
     public class ApiResponse<T>
     {
@@ -7,6 +9,7 @@
             Data = data;
         }
         public T Data { get; set; }
+        public Metadata Meta { get; set; }
     }
 
 }

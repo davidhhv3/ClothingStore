@@ -1,4 +1,5 @@
-﻿using ClothingStore.Core.Interfaces;
+﻿using ClothingStore.Core.CustomEntities;
+using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.Services;
 using ClothingStore.Infrastructure.Data;
 using ClothingStore.Infrastructure.Repositories;
@@ -10,6 +11,12 @@ namespace ClothingStore.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtension
     {
+        public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<PaginationOptions>(options => configuration.GetSection("Pagination").Bind(options));
+            return services;
+        }
+
         public static IServiceCollection AddDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<ClothingStoreContext>(options =>

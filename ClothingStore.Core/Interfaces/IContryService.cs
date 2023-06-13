@@ -1,10 +1,12 @@
-﻿using ClothingStore.Core.Entities;
+﻿using ClothingStore.Core.CustomEntities;
+using ClothingStore.Core.Entities;
+using ClothingStore.Core.QueryFilters;
 
 namespace ClothingStore.Core.Interfaces
 {
     public interface IContryService
     {
-        List<Country> GetCountries();
+        PagedList<Country> GetCountries(CountryQueryFilter filters);
 
         Task<Country> GetCountry(int Id);
 

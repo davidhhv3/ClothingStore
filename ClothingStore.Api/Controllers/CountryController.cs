@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
 using ClothingStore.Api.Responses;
+using ClothingStore.Core.CustomEntities;
 using ClothingStore.Core.DTOs;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
+using ClothingStore.Core.QueryFilters;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Net;
 
 namespace ClothingStore.Api.Controllers
 {
@@ -19,14 +23,36 @@ namespace ClothingStore.Api.Controllers
             _contryService = contryService;
             _mapper = mapper;
         }
-        [HttpGet]
-        public IActionResult GetCountries()
+        /// <summary>
+        /// Retrieve all posts
+        /// </summary>
+        /// <param name="filters">Filters to apply</param>
+        /// <returns></returns>
+        [HttpGet(Name = nameof(GetCountries))]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<CountryDto>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public IActionResult GetCountries([FromQuery] CountryQueryFilter filters)
         {
-            var countries = _contryService.GetCountries();
+            var countries = _contryService.GetCountries(filters);
             var countriesDtos = _mapper.Map<IEnumerable<CountryDto>>(countries);
-            var response = new ApiResponse<IEnumerable<CountryDto>>(countriesDtos);
+
+            var metadata = new Metadata
+            {
+                TotalCount = countries.TotalCount,
+                PageSize = countries.PageSize,
+                CurrentPage = countries.CurrentPage,
+                TotalPages = countries.TotalPages,
+                HasNextPage = countries.HasNextPage,
+                HasPreviousPage = countries.HasPreviousPage,
+            };
+            var response = new ApiResponse<IEnumerable<CountryDto>>(countriesDtos)
+            {
+                Meta = metadata
+            };
+            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(response);
         }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCountry(int id)
