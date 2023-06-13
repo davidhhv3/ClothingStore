@@ -1,18 +1,33 @@
 using ClothingStore.Infrastructure.Extensions;
+using ClothingStore.Infrastructure.Filters;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddControllers();
+
+
+
+//builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<GlobalExceptionFilter>();
+}).AddNewtonsoftJson(options =>
+{   
+    options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+});
+
+
+
 builder.Services.AddDbContexts(builder.Configuration);
 builder.Services.AddServices();
 builder.Services
     .AddFluentValidationAutoValidation()
     .AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
+
+
 
 
 

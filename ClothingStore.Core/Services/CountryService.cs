@@ -1,4 +1,5 @@
 ﻿using ClothingStore.Core.Entities;
+using ClothingStore.Core.Exceptions;
 using ClothingStore.Core.Interfaces;
 
 namespace ClothingStore.Core.Services
@@ -28,9 +29,16 @@ namespace ClothingStore.Core.Services
         }
         public async Task InsertCountry(Country country)
         {
+            if (country.Name.Contains("sexo"))
+                throw new BusinessException("Content not allowed");
+
+            if (country.Name.Contains("pechos"))
+                throw new BusinessException("Content not allowed");
+
             await _unitOfWork.CountryRepository.Add(country);
             await _unitOfWork.SaveChangesAsync();
         }
+
         public async Task<bool> UpdateCountry(Country country)
         {
             var existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
