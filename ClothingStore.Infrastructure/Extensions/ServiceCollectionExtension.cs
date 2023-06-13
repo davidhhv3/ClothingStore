@@ -1,4 +1,5 @@
 ﻿using ClothingStore.Core.Interfaces;
+using ClothingStore.Core.Services;
 using ClothingStore.Infrastructure.Data;
 using ClothingStore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,10 @@ namespace ClothingStore.Infrastructure.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection services)
         {
-            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));            
+            services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+            services.AddTransient<IContryService, CountryService>();
+            services.AddTransient<IUnitOfWork, UnitOfWork>();
+
             return services;
         }
 
