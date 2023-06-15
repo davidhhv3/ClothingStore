@@ -12,7 +12,7 @@ using System.Net;
 
 namespace ClothingStore.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CountryController : ControllerBase
@@ -59,10 +59,10 @@ namespace ClothingStore.Api.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCountry(int id)
         {
-            var country = await _contryService.GetCountry(id);
-            var countryDto = _mapper.Map<CountryDto>(country);
+            Country country = await _contryService.GetCountry(id);
+            CountryDto countryDto = _mapper.Map<CountryDto>(country);
             var response = new ApiResponse<CountryDto>(countryDto);
-            return Ok(response);
+            return Ok(response);          
         }
         [HttpPost]
         public async Task<IActionResult> Post(CountryDto countryDto)
@@ -89,8 +89,6 @@ namespace ClothingStore.Api.Controllers
             var response = new ApiResponse<bool>(result);
             return Ok(response);
         }
-
     }
-
 }
 
