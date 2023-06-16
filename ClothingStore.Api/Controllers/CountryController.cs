@@ -51,7 +51,7 @@ namespace ClothingStore.Api.Controllers
             {
                 Meta = metadata
             };
-            Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
             return Ok(response);
         }
 
