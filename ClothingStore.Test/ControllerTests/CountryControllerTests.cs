@@ -34,8 +34,10 @@ namespace ClothingStore.Test.ControllerTests
             OkObjectResult okResult = (OkObjectResult)actionResult;
             ApiResponse<CountryDto> returnedApiResponse = Assert.IsType<ApiResponse<CountryDto>>(okResult.Value);
 
-            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);    
+            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
+            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
             Assert.Equal(200, okResult.StatusCode);
+            Assert.IsType<ApiResponse<CountryDto>>(returnedApiResponse);
         }
 
         [Fact]
@@ -88,10 +90,10 @@ namespace ClothingStore.Test.ControllerTests
             ApiResponse<IEnumerable<CountryDto>> returnedApiResponse = Assert.IsType<ApiResponse<IEnumerable<CountryDto>>>(okResult.Value);            
 
             Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
-
             var properties = typeof(Metadata).GetProperties();
             for (int i = 0; i < properties.Length; i++)
                 Assert.Equal(properties[i].GetValue(expectedApiResponse.Meta), properties[i].GetValue(returnedApiResponse.Meta));
+            Assert.IsType<ApiResponse<IEnumerable<CountryDto>>>(returnedApiResponse);
         }
         [Fact]
         public async Task CreateCountry_returnCountryDto()
@@ -116,6 +118,33 @@ namespace ClothingStore.Test.ControllerTests
             Assert.NotNull(okResult);
             Assert.Equal(200, okResult.StatusCode);
             Assert.Equal(returnedApiResponse.Data, expectedApiResponse.Data);
+            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
+            Assert.IsType<ApiResponse<CountryDto>>(returnedApiResponse);
+        }
+        [Fact]
+        public async Task UpdateCountry_ReturnTrue()
+        {
+            // Arrange
+            var countryDto = new CountryDto { Name = "Test Country" };
+            var country = new Country { Id = 1, Name = "Test Country" };
+            ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);
+            var mockCountryService = new Mock<IContryService>();
+            var mapperMock = new Mock<IMapper>();
+            mockCountryService.Setup(service => service.UpdateCountry(country)).ReturnsAsync(true);
+            mapperMock.Setup(m => m.Map<Country>(countryDto)).Returns(country);
+            var controller = new CountryController(mockCountryService.Object, mapperMock.Object);        
+
+            // Act
+            var result = await controller.UpdateCountry(1, countryDto);
+            var okResult = result as OkObjectResult;
+            ApiResponse<bool> returnedApiResponse = Assert.IsType<ApiResponse<bool>>(okResult.Value);
+
+            //Assert
+            mockCountryService.Verify(service => service.UpdateCountry(country), Times.Once);
+            Assert.NotNull(okResult);
+            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
+            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
+            Assert.IsType<ApiResponse<bool>>(returnedApiResponse);
         }
     }
 }

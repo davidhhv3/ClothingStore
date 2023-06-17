@@ -76,12 +76,12 @@ namespace ClothingStore.Api.Controllers
 
 
         [HttpPut]
-        public async Task<IActionResult> Put(int id, CountryDto countryDto)
+        public async Task<IActionResult> UpdateCountry(int id, CountryDto countryDto)
         {
-            var country = _mapper.Map<Country>(countryDto);
+            Country country = _mapper.Map<Country>(countryDto);
             country.Id = id;
-            var result = await _contryService.UpdateCountry(country);
-            var response = new ApiResponse<bool>(result);
+            bool result = await _contryService.UpdateCountry(country);
+            ApiResponse<bool> response = new ApiResponse<bool>(result);
             return Ok(response);
         }
         [HttpDelete("{id}")]
