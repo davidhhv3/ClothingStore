@@ -85,10 +85,10 @@ namespace ClothingStore.Api.Controllers
             return Ok(response);
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteCountry(int id)
         {
-            var result = await _contryService.DeleteCountry(id);
-            var response = new ApiResponse<bool>(result);
+            bool result = await _contryService.DeleteCountry(id);
+            ApiResponse<bool> response = new ApiResponse<bool>(result);
             return Ok(response);
         }
     }

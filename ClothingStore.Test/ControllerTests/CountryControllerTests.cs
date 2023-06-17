@@ -9,6 +9,7 @@ using ClothingStore.Core.QueryFilters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Newtonsoft.Json;
+using System.Diagnostics.Metrics;
 
 namespace ClothingStore.Test.ControllerTests
 {
@@ -141,6 +142,28 @@ namespace ClothingStore.Test.ControllerTests
 
             //Assert
             mockCountryService.Verify(service => service.UpdateCountry(country), Times.Once);
+            Assert.NotNull(okResult);
+            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
+            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
+            Assert.IsType<ApiResponse<bool>>(returnedApiResponse);
+        }
+        [Fact]
+        public async Task DeleteCountry_ReturnTrue()
+        {
+            // Arrange
+            ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);
+            Mock<IContryService> mockCountryService = new Mock<IContryService>();
+            mockCountryService.Setup(service => service.DeleteCountry(1)).ReturnsAsync(true);
+            Mock<IMapper> mapperMock = new Mock<IMapper>();
+            CountryController controller = new CountryController(mockCountryService.Object, mapperMock.Object);           
+
+            // Act
+            var result = await controller.DeleteCountry(1);
+            var okResult = result as OkObjectResult;
+            ApiResponse<bool> returnedApiResponse = Assert.IsType<ApiResponse<bool>>(okResult.Value);
+
+            // Assert
+            mockCountryService.Verify(service => service.DeleteCountry(1), Times.Once);
             Assert.NotNull(okResult);
             Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
             Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
