@@ -65,14 +65,16 @@ namespace ClothingStore.Api.Controllers
             return Ok(response);          
         }
         [HttpPost]
-        public async Task<IActionResult> Post(CountryDto countryDto)
+        public async Task<IActionResult> CreateCountry(CountryDto countryDto)
         {
-            var country = _mapper.Map<Country>(countryDto);
+            Country country = _mapper.Map<Country>(countryDto);
             await _contryService.InsertCountry(country);
             countryDto = _mapper.Map<CountryDto>(country);
-            var response = new ApiResponse<CountryDto>(countryDto);
+            ApiResponse<CountryDto> response = new ApiResponse<CountryDto>(countryDto);
             return Ok(response);
         }
+
+
         [HttpPut]
         public async Task<IActionResult> Put(int id, CountryDto countryDto)
         {

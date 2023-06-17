@@ -93,5 +93,29 @@ namespace ClothingStore.Test.ControllerTests
             for (int i = 0; i < properties.Length; i++)
                 Assert.Equal(properties[i].GetValue(expectedApiResponse.Meta), properties[i].GetValue(returnedApiResponse.Meta));
         }
+        [Fact]
+        public async Task CreateCountry_returnCountryDto()
+        {
+            // Arrange
+            Country country = new Country { Name = "Test Country" };
+            CountryDto countryDto = new CountryDto { Name = "Test Country" };
+            ApiResponse<CountryDto> expectedApiResponse = new ApiResponse<CountryDto>(countryDto);
+            Mock<IContryService> mockCountryService = new Mock<IContryService>();
+            Mock<IMapper> mapperMock = new Mock<IMapper>();
+            mapperMock.Setup(m => m.Map<Country>(countryDto)).Returns(country);
+            mapperMock.Setup(m => m.Map<CountryDto>(country)).Returns(countryDto);
+            CountryController controller = new CountryController(mockCountryService.Object, mapperMock.Object);
+
+            // Act   
+            IActionResult actionResult = await controller.CreateCountry(countryDto);
+            OkObjectResult okResult = (OkObjectResult)actionResult;
+            ApiResponse<CountryDto> returnedApiResponse = Assert.IsType<ApiResponse<CountryDto>>(okResult.Value);
+
+            // Assert
+            mockCountryService.Verify(service => service.InsertCountry(country), Times.Once);
+            Assert.NotNull(okResult);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.Equal(returnedApiResponse.Data, expectedApiResponse.Data);
+        }
     }
 }
