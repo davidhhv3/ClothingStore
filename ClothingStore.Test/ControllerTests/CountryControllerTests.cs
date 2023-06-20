@@ -8,13 +8,21 @@ using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Newtonsoft.Json;
-using System.Diagnostics.Metrics;
 
 namespace ClothingStore.Test.ControllerTests
 {
     public class CountryControllerTests
     {
+        private readonly Mock<IContryService> mockCountryService;
+        private readonly Mock<IMapper> mapperMock;
+        private readonly CountryController controller;
+
+        public CountryControllerTests()
+        {
+            mockCountryService = new Mock<IContryService>();
+            mapperMock = new Mock<IMapper>();
+            controller = new CountryController(mockCountryService.Object, mapperMock.Object);
+        }
         [Fact]
         public async Task GetCountry_ReturnsCountryDto()
         {
@@ -23,13 +31,8 @@ namespace ClothingStore.Test.ControllerTests
             CountryDto expectedCountryDto = new CountryDto { Id = 1, Name = "David" };
             var expectedApiResponse = new ApiResponse<CountryDto>(expectedCountryDto);
 
-            var serviceMock = new Mock<IContryService>();
-            var mapperMock = new Mock<IMapper>();
-
-            serviceMock.Setup(s => s.GetCountry(1)).ReturnsAsync(expectedCountry);
-            mapperMock.Setup(m => m.Map<CountryDto>(expectedCountry)).Returns(expectedCountryDto);
-
-            var controller = new CountryController(serviceMock.Object, mapperMock.Object);
+            mockCountryService.Setup(s => s.GetCountry(1)).ReturnsAsync(expectedCountry);
+            mapperMock.Setup(m => m.Map<CountryDto>(expectedCountry)).Returns(expectedCountryDto);         
 
             IActionResult actionResult = await controller.GetCountry(1);
             OkObjectResult okResult = (OkObjectResult)actionResult;
@@ -77,18 +80,13 @@ namespace ClothingStore.Test.ControllerTests
             };
 
             PagedList<Country> pageListServcieResponse = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
-            var serviceMock = new Mock<IContryService>();
-            var mapperMock = new Mock<IMapper>();
-            serviceMock.Setup(s => s.GetCountries(filters)).Returns(pageListServcieResponse);
-            mapperMock.Setup(m => m.Map<IEnumerable<CountryDto>>(pageListServcieResponse)).Returns(countriesDto);
-
-
-            var controller = new CountryController(serviceMock.Object, mapperMock.Object);
+            mockCountryService.Setup(s => s.GetCountries(filters)).Returns(pageListServcieResponse);
+            mapperMock.Setup(m => m.Map<IEnumerable<CountryDto>>(pageListServcieResponse)).Returns(countriesDto);            
 
             IActionResult actionResult = controller.GetCountries(filters);
             OkObjectResult okResult = (OkObjectResult)actionResult;
 
-            ApiResponse<IEnumerable<CountryDto>> returnedApiResponse = Assert.IsType<ApiResponse<IEnumerable<CountryDto>>>(okResult.Value);            
+            ApiResponse<IEnumerable<CountryDto>> returnedApiResponse = Assert.IsType<ApiResponse<IEnumerable<CountryDto>>>(okResult.Value);
 
             Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
             var properties = typeof(Metadata).GetProperties();
@@ -102,12 +100,9 @@ namespace ClothingStore.Test.ControllerTests
             // Arrange
             Country country = new Country { Name = "Test Country" };
             CountryDto countryDto = new CountryDto { Name = "Test Country" };
-            ApiResponse<CountryDto> expectedApiResponse = new ApiResponse<CountryDto>(countryDto);
-            Mock<IContryService> mockCountryService = new Mock<IContryService>();
-            Mock<IMapper> mapperMock = new Mock<IMapper>();
+            ApiResponse<CountryDto> expectedApiResponse = new ApiResponse<CountryDto>(countryDto);         
             mapperMock.Setup(m => m.Map<Country>(countryDto)).Returns(country);
-            mapperMock.Setup(m => m.Map<CountryDto>(country)).Returns(countryDto);
-            CountryController controller = new CountryController(mockCountryService.Object, mapperMock.Object);
+            mapperMock.Setup(m => m.Map<CountryDto>(country)).Returns(countryDto);           
 
             // Act   
             IActionResult actionResult = await controller.CreateCountry(countryDto);
@@ -129,11 +124,8 @@ namespace ClothingStore.Test.ControllerTests
             var countryDto = new CountryDto { Name = "Test Country" };
             var country = new Country { Id = 1, Name = "Test Country" };
             ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);
-            var mockCountryService = new Mock<IContryService>();
-            var mapperMock = new Mock<IMapper>();
             mockCountryService.Setup(service => service.UpdateCountry(country)).ReturnsAsync(true);
-            mapperMock.Setup(m => m.Map<Country>(countryDto)).Returns(country);
-            var controller = new CountryController(mockCountryService.Object, mapperMock.Object);        
+            mapperMock.Setup(m => m.Map<Country>(countryDto)).Returns(country);  
 
             // Act
             var result = await controller.UpdateCountry(1, countryDto);
@@ -151,11 +143,8 @@ namespace ClothingStore.Test.ControllerTests
         public async Task DeleteCountry_ReturnTrue()
         {
             // Arrange
-            ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);
-            Mock<IContryService> mockCountryService = new Mock<IContryService>();
-            mockCountryService.Setup(service => service.DeleteCountry(1)).ReturnsAsync(true);
-            Mock<IMapper> mapperMock = new Mock<IMapper>();
-            CountryController controller = new CountryController(mockCountryService.Object, mapperMock.Object);           
+            ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);           
+            mockCountryService.Setup(service => service.DeleteCountry(1)).ReturnsAsync(true);                  
 
             // Act
             var result = await controller.DeleteCountry(1);
