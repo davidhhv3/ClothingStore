@@ -89,7 +89,7 @@ namespace ClothingStore.Api.Controllers
         {
             bool result = await _contryService.DeleteCountry(id);
             ApiResponse<bool> response = new ApiResponse<bool>(result);
-            return Ok(response);
+            return Ok(response);        
         }
     }
 }

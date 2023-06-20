@@ -38,10 +38,8 @@ namespace ClothingStore.Test.ControllerTests
             OkObjectResult okResult = (OkObjectResult)actionResult;
             ApiResponse<CountryDto> returnedApiResponse = Assert.IsType<ApiResponse<CountryDto>>(okResult.Value);
 
-            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
-            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
-            Assert.Equal(200, okResult.StatusCode);
-            Assert.IsType<ApiResponse<CountryDto>>(returnedApiResponse);
+            mockCountryService.Verify(service => service.GetCountry(1), Times.Once);
+            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);         
         }
 
         [Fact]
@@ -109,11 +107,7 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockCountryService.Verify(service => service.InsertCountry(country), Times.Once);
-            Assert.NotNull(okResult);
-            Assert.Equal(200, okResult.StatusCode);
-            Assert.Equal(returnedApiResponse.Data, expectedApiResponse.Data);
-            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
-            Assert.IsType<ApiResponse<CountryDto>>(returnedApiResponse);
+            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);            
         }
         [Fact]
         public async Task UpdateCountry_ReturnTrue()
@@ -130,10 +124,7 @@ namespace ClothingStore.Test.ControllerTests
 
             //Assert
             mockCountryService.Verify(service => service.UpdateCountry(country), Times.Once);
-            Assert.NotNull(okResult);
-            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
-            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
-            Assert.IsType<ApiResponse<bool>>(returnedApiResponse);
+            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);           
         }
         [Fact]
         public async Task DeleteCountry_ReturnTrue()
@@ -149,10 +140,15 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockCountryService.Verify(service => service.DeleteCountry(1), Times.Once);
+            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
+        }
+        public void checkResponseApi<T>(OkObjectResult okResult, ApiResponse<T> returnedApiResponse, ApiResponse<T> expectedApiResponse)
+        {
             Assert.NotNull(okResult);
             Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
             Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
-            Assert.IsType<ApiResponse<bool>>(returnedApiResponse);
+            Assert.Equal(200, okResult.StatusCode);
+            Assert.IsType<ApiResponse<T>>(returnedApiResponse);
         }
     }
 }
