@@ -43,7 +43,7 @@ namespace ClothingStore.Test.ControllerTests
         }
 
         [Fact]
-        public async Task GetCountries_ReturnsCountriesDto()
+        public void GetCountries_ReturnsCountriesDto()
         {
             Country[] countries = new[]
              {
@@ -119,7 +119,7 @@ namespace ClothingStore.Test.ControllerTests
 
             // Act
             var result = await controller.UpdateCountry(1, countryDto);
-            var okResult = result as OkObjectResult;
+            OkObjectResult okResult = result as OkObjectResult ?? throw new ArgumentNullException(nameof(result));
             ApiResponse<bool> returnedApiResponse = Assert.IsType<ApiResponse<bool>>(okResult.Value);
 
             //Assert
@@ -135,20 +135,20 @@ namespace ClothingStore.Test.ControllerTests
 
             // Act
             var result = await controller.DeleteCountry(1);
-            var okResult = result as OkObjectResult;
+            OkObjectResult okResult = result as OkObjectResult ?? throw new ArgumentNullException(nameof(result));
             ApiResponse<bool> returnedApiResponse = Assert.IsType<ApiResponse<bool>>(okResult.Value);
 
             // Assert
             mockCountryService.Verify(service => service.DeleteCountry(1), Times.Once);
             checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
-        }
+        }       
         public void checkResponseApi<T>(OkObjectResult okResult, ApiResponse<T> returnedApiResponse, ApiResponse<T> expectedApiResponse)
         {
             Assert.NotNull(okResult);
             Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
             Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
             Assert.Equal(200, okResult.StatusCode);
-            Assert.IsType<ApiResponse<T>>(returnedApiResponse);
-        }
+            Assert.IsType<ApiResponse<T>>(returnedApiResponse);          
+        }  
     }
 }

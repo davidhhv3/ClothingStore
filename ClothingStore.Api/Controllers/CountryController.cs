@@ -88,8 +88,8 @@ namespace ClothingStore.Api.Controllers
         public async Task<IActionResult> DeleteCountry(int id)
         {
             bool result = await _contryService.DeleteCountry(id);
-            ApiResponse<bool> response = new ApiResponse<bool>(result);
-            return Ok(response);        
+            ApiResponse<bool> response = new ApiResponse<bool>(result);           
+            return Ok(response);            
         }
     }
 }
