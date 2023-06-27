@@ -1,5 +1,6 @@
 ﻿using ClothingStore.Core.CustomEntities;
 using ClothingStore.Core.Entities;
+using ClothingStore.Core.Exceptions;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
 using ClothingStore.Core.Services;
@@ -56,7 +57,22 @@ namespace ClothingStore.Test.ServicesTests
             Assert.Equal(expectedCountry, result);           
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(countryId), Times.Once);
         }
- 
+        [Fact]
+        public async Task GetCountry_ReturnLaCiudadNoEstáRegistrada()
+        {
+            // Arrange
+            int countryId = 1;
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(countryId)).ReturnsAsync((Country?)null);
+
+            // Act and Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
+            {
+                await service.GetCountry(countryId);
+            });
+            Assert.Equal("La ciudad no está registrada", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(countryId), Times.Once);
+        }
+
         [Fact]
         public void GetCountries_ReturnPagedListCountries()
         {
@@ -85,8 +101,42 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
+        public void GetCountries_ReturnAúnNoHayCiudades()
+        {
+            // Arrange
+            CountryQueryFilter filters = new CountryQueryFilter
+            {
+                PageNumber = 1,
+                PageSize = 2
+            };
+            List<Country> countries = new List<Country>();         
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetAll()).Returns(countries);
+
+            // Act and Assert
+            var exception =  Assert.Throws<BusinessException>(() =>
+            {
+                service.GetCountries(filters);
+            });
+            Assert.Equal("Aún no hay ciudades", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
+        }
+        [Fact]
+        public async Task InsertCountru_ReturnContentNotAllowed()
+        {
+            // Arrange
+            Country country = new Country { Id = 1, Name = "Pechos" };
+
+            // Act and Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
+            {
+                await service.InsertCountry(country);
+            });
+            Assert.Equal("Content not allowed", exception.Message);         
+        }
+        [Fact]
         public async Task UpdateCountry_ReturnTrue()
         {
+            // Arrange
             Country country = new Country { Id = 1, Name = "Country 1" };
             mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(1)).ReturnsAsync(country);
             mockUnitOfWork.Setup(uow => uow.CountryRepository.Update(country)).Verifiable();
@@ -100,5 +150,22 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.Update(country), Times.Once);
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
         }
+        [Fact]
+        public async Task UpdateCountry_ReturnLaCiudadNoEstáRegistrada()
+        {
+            // Arrange
+            Country country = new Country { Id = 1, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync((Country?)null);
+
+            // Act and Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
+            {
+                await service.UpdateCountry(country);
+            });
+            Assert.Equal("La ciudad no está registrada", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
+
+        }
+
     }
 }

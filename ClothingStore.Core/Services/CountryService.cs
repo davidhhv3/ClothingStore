@@ -25,24 +25,28 @@ namespace ClothingStore.Core.Services
         }
         public async Task<Country> GetCountry(int Id)
         {
-            return await _unitOfWork.CountryRepository.GetById(Id);
+            Country? country = await _unitOfWork.CountryRepository.GetById(Id);
+            if (country == null)
+                throw new BusinessException("La ciudad no está registrada");
+            return country;
         }
         public PagedList<Country> GetCountries(CountryQueryFilter filters)
         {
             filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
             filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
             List<Country> countries = _unitOfWork.CountryRepository.GetAll().ToList();
+            if(countries.Count == 0 || countries == null)
+                throw new BusinessException("Aún no hay ciudades");
             PagedList<Country> pagedCountries = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
             return pagedCountries;
         }
 
         public async Task InsertCountry(Country country)
-        {
-            if (country.Name.Contains("sexo"))
-                throw new BusinessException("Content not allowed");
-
-            if (country.Name.Contains("pechos"))
-                throw new BusinessException("Content not allowed");
+        {        
+            List<string> forbiddenWords = new List<string> { "sexo", "pechos"};
+            foreach (string word in forbiddenWords)
+                if (country.Name.Contains(word, StringComparison.OrdinalIgnoreCase))
+                    throw new BusinessException("Content not allowed");
 
             await _unitOfWork.CountryRepository.Add(country);
             await _unitOfWork.SaveChangesAsync();
@@ -50,9 +54,10 @@ namespace ClothingStore.Core.Services
 
         public async Task<bool> UpdateCountry(Country country)
         {
-            Country existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
+            Country? existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
+            if (existingcountry == null)
+                throw new BusinessException("La ciudad no está registrada");
             existingcountry.Name = country.Name;
-
             _unitOfWork.CountryRepository.Update(existingcountry);
             await _unitOfWork.SaveChangesAsync();
             return true;

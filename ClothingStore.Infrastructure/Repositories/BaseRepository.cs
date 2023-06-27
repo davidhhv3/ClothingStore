@@ -2,6 +2,7 @@
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace ClothingStore.Infrastructure.Repositories
 {
@@ -16,9 +17,8 @@ namespace ClothingStore.Infrastructure.Repositories
         public IEnumerable<T> GetAll()
         {
             return _entities.AsEnumerable();
-        }
-
-        public async Task<T> GetById(int id)
+        }        
+        public async Task<T?> GetById(int id)
         {
             return await _entities.FindAsync(id);
         }
