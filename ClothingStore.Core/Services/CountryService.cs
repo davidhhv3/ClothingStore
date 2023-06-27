@@ -31,8 +31,8 @@ namespace ClothingStore.Core.Services
         {
             filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
             filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            var countries = _unitOfWork.CountryRepository.GetAll().ToList();
-            var pagedCountries = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
+            List<Country> countries = _unitOfWork.CountryRepository.GetAll().ToList();
+            PagedList<Country> pagedCountries = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
             return pagedCountries;
         }
 
@@ -50,7 +50,7 @@ namespace ClothingStore.Core.Services
 
         public async Task<bool> UpdateCountry(Country country)
         {
-            var existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
+            Country existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
             existingcountry.Name = country.Name;
 
             _unitOfWork.CountryRepository.Update(existingcountry);

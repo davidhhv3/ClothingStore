@@ -5,9 +5,7 @@ using ClothingStore.Core.DTOs;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using System.Net;
 
 namespace ClothingStore.Api.Controllers
