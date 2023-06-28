@@ -30,6 +30,8 @@ namespace ClothingStore.Test.ServicesTests
         {
             // Arrange
             int countryId = 1;
+            Country returnCountry = new Country { Id = countryId, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(countryId)).ReturnsAsync(returnCountry);
             mockUnitOfWork.Setup(uow => uow.CountryRepository.Delete(countryId)).Verifiable();
             mockUnitOfWork.Setup(uow => uow.SaveChangesAsync()).Verifiable();
 
@@ -40,6 +42,21 @@ namespace ClothingStore.Test.ServicesTests
             Assert.True(result);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.Delete(countryId), Times.Once);
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
+        }
+        [Fact]
+        public async Task DeleteCountry_ReturnLaCiudadNoEstáRegistrada()
+        {
+            // Arrange
+            int id = 1;
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(id)).ReturnsAsync((Country?)null);
+
+            // Act and Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
+            {
+                await service.DeleteCountry(id);
+            });
+            Assert.Equal("La ciudad no está registrada", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(id), Times.Once);
         }
         [Fact]
         public async Task GetCountry_ReturnCountry()
@@ -121,10 +138,26 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
+        public async Task InsertCountru_ReturnLaCiudadYaEstaRegistrada()
+        {
+            // Arrange
+            Country country = new Country { Id = 1, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync(country);
+
+            // Act and Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
+            {
+                await service.InsertCountry(country);
+            });
+            Assert.Equal("La ciudad ya está registrada", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
+        }
+        [Fact]
         public async Task InsertCountru_ReturnContentNotAllowed()
         {
             // Arrange
             Country country = new Country { Id = 1, Name = "Pechos" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync((Country?)null);
 
             // Act and Assert
             var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
