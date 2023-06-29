@@ -17,7 +17,7 @@ namespace ClothingStore.Test.ServicesTests
         private readonly CountryService service;
 
         public CountryServiceTests()
-        {
+        { 
             mockUnitOfWork = new Mock<IUnitOfWork>();
             mockOptions = new Mock<IOptions<PaginationOptions>>();
             _paginationOptions = new PaginationOptions();

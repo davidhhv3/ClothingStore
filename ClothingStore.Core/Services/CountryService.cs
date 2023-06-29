@@ -1,11 +1,10 @@
 ﻿using ClothingStore.Core.CustomEntities;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Exceptions;
+using ClothingStore.Core.Helpers;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
 using Microsoft.Extensions.Options;
-using System.Diagnostics.Metrics;
-using System.Xml.Linq;
 
 namespace ClothingStore.Core.Services
 {
@@ -18,24 +17,17 @@ namespace ClothingStore.Core.Services
         {
             _unitOfWork = unitOfWork;
             _paginationOptions = options.Value;
-        }
-        public async Task<Country> VerifyCityExistence(int id)
-        {
-            Country? country = await _unitOfWork.CountryRepository.GetById(id);
-            if (country == null)
-                throw new BusinessException("La ciudad no está registrada");
-            return country;
-        }
+        }  
         public async Task<bool> DeleteCountry(int id)
         {
-            await VerifyCityExistence(id);
+            await CountryServiceHelpers.VerifyCityExistence(id,_unitOfWork);
             await _unitOfWork.CountryRepository.Delete(id);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
         public async Task<Country> GetCountry(int Id)
         {
-            Country country= await VerifyCityExistence(Id);
+            Country country= await CountryServiceHelpers.VerifyCityExistence(Id, _unitOfWork);
             return country;
         }
         public PagedList<Country> GetCountries(CountryQueryFilter filters)
@@ -55,21 +47,15 @@ namespace ClothingStore.Core.Services
             if (existingcountry != null)
                 throw new BusinessException("La ciudad ya está registrada");
             if (country.Name != null)
-                CheckForbiddenWords(country.Name);
+                CountryServiceHelpers.CheckForbiddenWords(country.Name);             
             await _unitOfWork.CountryRepository.Add(country);
             await _unitOfWork.SaveChangesAsync();
         }
-        public void CheckForbiddenWords(string Name)
-        {
-            List<string> forbiddenWords = new List<string> { "sexo", "pechos" };
-            foreach (string word in forbiddenWords)
-                if (Name.Contains(word, StringComparison.OrdinalIgnoreCase))
-                    throw new BusinessException("Content not allowed");
-        }
-
         public async Task<bool> UpdateCountry(Country country)
         {
-            Country existingcountry = await VerifyCityExistence(country.Id);
+            Country existingcountry = await CountryServiceHelpers.VerifyCityExistence(country.Id, _unitOfWork);
+            if(country.Name != null)
+              CountryServiceHelpers.CheckForbiddenWords(country.Name);
             existingcountry.Name = country.Name;
             _unitOfWork.CountryRepository.Update(existingcountry);
             await _unitOfWork.SaveChangesAsync();
