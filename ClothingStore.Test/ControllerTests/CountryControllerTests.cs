@@ -6,6 +6,7 @@ using ClothingStore.Core.DTOs;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
+using ClothingStore.Test.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 
@@ -39,7 +40,7 @@ namespace ClothingStore.Test.ControllerTests
             ApiResponse<CountryDto> returnedApiResponse = Assert.IsType<ApiResponse<CountryDto>>(okResult.Value);
 
             mockCountryService.Verify(service => service.GetCountry(1), Times.Once);
-            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);         
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);         
         }
 
         [Fact]
@@ -107,7 +108,7 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockCountryService.Verify(service => service.InsertCountry(country), Times.Once);
-            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);            
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);            
         }
         [Fact]
         public async Task UpdateCountry_ReturnTrue()
@@ -124,7 +125,7 @@ namespace ClothingStore.Test.ControllerTests
 
             //Assert
             mockCountryService.Verify(service => service.UpdateCountry(country), Times.Once);
-            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);           
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);           
         }
         [Fact]
         public async Task DeleteCountry_ReturnTrue()
@@ -140,15 +141,15 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockCountryService.Verify(service => service.DeleteCountry(1), Times.Once);
-            checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
         }       
-        public void checkResponseApi<T>(OkObjectResult okResult, ApiResponse<T> returnedApiResponse, ApiResponse<T> expectedApiResponse)
-        {
-            Assert.NotNull(okResult);
-            Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
-            Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
-            Assert.Equal(200, okResult.StatusCode);
-            Assert.IsType<ApiResponse<T>>(returnedApiResponse);          
-        }  
+        //public void checkResponseApi<T>(OkObjectResult okResult, ApiResponse<T> returnedApiResponse, ApiResponse<T> expectedApiResponse)
+        //{
+        //    Assert.NotNull(okResult);
+        //    Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
+        //    Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
+        //    Assert.Equal(200, okResult.StatusCode);
+        //    Assert.IsType<ApiResponse<T>>(returnedApiResponse);          
+        //}  
     }
 }

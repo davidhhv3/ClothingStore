@@ -34,8 +34,9 @@ namespace ClothingStore.Infrastructure.Repositories
         }
         public async Task Delete(int id)
         {
-            T entity = await GetById(id);
-            _entities.Remove(entity);
+            T? entity = await GetById(id);
+            if (entity != null) 
+             _entities.Remove(entity);
         }
     }
 

@@ -9,8 +9,8 @@ namespace ClothingStore.Infrastructure.Repositories
     {
         public SecurityRepository(ClothingStoreContext context) : base(context) { }
 
-        public async Task<Security> GetLoginByCredentials(UserLogin login)
-        {
+        public async Task<Security?> GetLoginByCredentials(UserLogin login)
+        {           
             return await _entities.FirstOrDefaultAsync(x => x.User == login.User);
         }
     }

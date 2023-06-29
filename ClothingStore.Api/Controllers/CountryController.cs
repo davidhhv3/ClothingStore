@@ -48,8 +48,7 @@ namespace ClothingStore.Api.Controllers
             var response = new ApiResponse<IEnumerable<CountryDto>>(countriesDtos)
             {
                 Meta = metadata
-            };
-            //Response.Headers.Add("X-Pagination", JsonConvert.SerializeObject(metadata));
+            };           
             return Ok(response);
         }
 
