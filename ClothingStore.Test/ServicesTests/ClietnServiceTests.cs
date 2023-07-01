@@ -6,7 +6,6 @@ using ClothingStore.Core.QueryFilters;
 using ClothingStore.Core.Services;
 using Microsoft.Extensions.Options;
 using Moq;
-using System.Diagnostics.Metrics;
 
 namespace ClothingStore.Test.ServicesTests
 {

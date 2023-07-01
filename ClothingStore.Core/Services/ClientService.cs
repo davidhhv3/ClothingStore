@@ -28,9 +28,9 @@ namespace ClothingStore.Core.Services
             return true;
         }
 
-        public async Task<Client> GetClient(int Id)
+        public async Task<Client?> GetClient(int Id)
         {
-            Client client = await ClientServiceHelpers.VerifyClientExistence(Id, _unitOfWork);
+            Client? client = await ClientServiceHelpers.VerifyClientExistence(Id, _unitOfWork);
             return client;
         }
 
@@ -58,9 +58,12 @@ namespace ClothingStore.Core.Services
 
         public async Task<bool> UpdateClient(Client client)
         {
-            Client existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork);        
-            existingClient.Name = existingClient.Name;
-            _unitOfWork.ClientRepository.Update(existingClient);
+            Client? existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork); 
+            if(existingClient != null)
+            {
+                existingClient.Name = existingClient.Name;
+                _unitOfWork.ClientRepository.Update(existingClient);
+            }        
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
