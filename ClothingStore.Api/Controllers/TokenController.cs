@@ -1,9 +1,12 @@
-﻿using ClothingStore.Core.Entities;
+﻿using ClothingStore.Api.Responses;
+using ClothingStore.Core.DTOs;
+using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Infrastructure.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net;
 using System.Security.Claims;
 using System.Text;
 
