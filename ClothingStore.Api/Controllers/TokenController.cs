@@ -22,6 +22,11 @@ namespace ClothingStore.Api.Controllers
             _securityService = securityService;
             _passwordService = passwordService;
         }
+        /// <summary>
+        /// Authenticate a user
+        /// </summary>    
+        /// <param name="login">User login data</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Authentication(UserLogin login)
         {

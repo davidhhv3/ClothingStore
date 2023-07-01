@@ -22,17 +22,23 @@ namespace ClothingStore.Api.Controllers
             _mapper = mapper;
             _passwordService = passwordService;
         }
+
+        /// <summary>
+        /// Create a new security user
+        /// </summary>    
+        /// <param name="securityDto">Security user data</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Post(SecurityDto securityDto)
         {
-            var security = _mapper.Map<Security>(securityDto);
-            security.Password = _passwordService.Hash(security.Password);
+            Security security = _mapper.Map<Security>(securityDto);
+            if(security.Password != null)            
+               security.Password = _passwordService.Hash(security.Password);
             await _securityService.RegisterUser(security);
             securityDto = _mapper.Map<SecurityDto>(security);
             var response = new ApiResponse<SecurityDto>(securityDto);
             return Ok(response);
         }
-
     }
 
 }

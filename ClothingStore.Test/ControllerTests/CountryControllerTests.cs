@@ -142,14 +142,6 @@ namespace ClothingStore.Test.ControllerTests
             // Assert
             mockCountryService.Verify(service => service.DeleteCountry(1), Times.Once);
             CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
-        }       
-        //public void checkResponseApi<T>(OkObjectResult okResult, ApiResponse<T> returnedApiResponse, ApiResponse<T> expectedApiResponse)
-        //{
-        //    Assert.NotNull(okResult);
-        //    Assert.Equal(expectedApiResponse.Data, returnedApiResponse.Data);
-        //    Assert.Equal(expectedApiResponse.Meta, returnedApiResponse.Meta);
-        //    Assert.Equal(200, okResult.StatusCode);
-        //    Assert.IsType<ApiResponse<T>>(returnedApiResponse);          
-        //}  
+        } 
     }
 }

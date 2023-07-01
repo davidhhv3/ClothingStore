@@ -23,12 +23,13 @@ namespace ClothingStore.Api.Controllers
             _contryService = contryService;
             _mapper = mapper;
         }
+
         /// <summary>
-        /// Retrieve all posts
+        /// Retrieve all countries
         /// </summary>
         /// <param name="filters">Filters to apply</param>
         /// <returns></returns>
-        [HttpGet(Name = nameof(GetCountries))]
+        [HttpGet("GetCountries")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<CountryDto>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public IActionResult GetCountries([FromQuery] CountryQueryFilter filters)
@@ -52,8 +53,12 @@ namespace ClothingStore.Api.Controllers
             return Ok(response);
         }
 
-
-        [HttpGet("{id}")]
+        /// <summary>
+        /// Retrieve country
+        /// </summary>
+        /// <param name="id">The ID of the country to retrieve</param>
+        /// <returns></returns>
+        [HttpGet("GetCountry/{id}")]        
         public async Task<IActionResult> GetCountry(int id)
         {
             Country country = await _contryService.GetCountry(id);
@@ -61,7 +66,13 @@ namespace ClothingStore.Api.Controllers
             var response = new ApiResponse<CountryDto>(countryDto);
             return Ok(response);          
         }
-        [HttpPost]
+
+        /// <summary>
+        /// Create a new country
+        /// </summary>
+        /// <param name="countryDto">Country data</param>
+        /// <returns></returns>
+        [HttpPost("CreateCountry")]
         public async Task<IActionResult> CreateCountry(CountryDto countryDto)
         {
             Country country = _mapper.Map<Country>(countryDto);
@@ -71,8 +82,13 @@ namespace ClothingStore.Api.Controllers
             return Ok(response);
         }
 
-
-        [HttpPut]
+        /// <summary>
+        /// Update a country
+        /// </summary>   
+        /// <param name="id">The ID of the country to update</param>
+        /// <param name="countryDto">Updated country data</param>
+        /// <returns></returns>
+        [HttpPut("UpdateCountry")]
         public async Task<IActionResult> UpdateCountry(int id, CountryDto countryDto)
         {
             Country country = _mapper.Map<Country>(countryDto);
@@ -81,7 +97,13 @@ namespace ClothingStore.Api.Controllers
             ApiResponse<bool> response = new ApiResponse<bool>(result);
             return Ok(response);
         }
-        [HttpDelete("{id}")]
+
+        /// <summary>
+        /// Delete a country by ID
+        /// </summary>    
+        /// <param name="id">The ID of the country to delete</param>
+        /// <returns></returns>
+        [HttpDelete("DeleteCountry/{id}")]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             bool result = await _contryService.DeleteCountry(id);

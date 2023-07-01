@@ -164,7 +164,7 @@ namespace ClothingStore.Test.ServicesTests
             {
                 await service.InsertCountry(country);
             });
-            Assert.Equal("Content not allowed", exception.Message);         
+            Assert.Equal("Contenido no permitido", exception.Message);         
         }
         [Fact]
         public async Task UpdateCountry_ReturnTrue()
