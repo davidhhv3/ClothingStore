@@ -91,7 +91,7 @@ namespace ClothingStore.Test.ServicesTests
         }
 
         [Fact]
-        public void GetCountries_ReturnPagedListCountries()
+        public async Task GetCountries_ReturnPagedListCountries()
         {
             // Arrange
             CountryQueryFilter filters = new CountryQueryFilter
@@ -106,10 +106,10 @@ namespace ClothingStore.Test.ServicesTests
                 new Country { Id = 3, Name = "Country 3" },
                 new Country { Id = 4, Name = "Country 4" },
             };
-            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetAll()).Returns(countries);
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetAll()).ReturnsAsync(countries);
 
             // Act
-            PagedList<Country> result = service.GetCountries(filters);
+            PagedList<Country> result = await service.GetCountries(filters);
 
             // Assert
             Assert.NotNull(result);
@@ -118,7 +118,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
-        public void GetCountries_ReturnAúnNoHayCiudades()
+        public async Task GetCountries_ReturnAúnNoHayCiudades()
         {
             // Arrange
             CountryQueryFilter filters = new CountryQueryFilter
@@ -127,12 +127,12 @@ namespace ClothingStore.Test.ServicesTests
                 PageSize = 2
             };
             List<Country> countries = new List<Country>();         
-            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetAll()).Returns(countries);
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetAll()).ReturnsAsync(countries);
 
             // Act and Assert
-            var exception =  Assert.Throws<BusinessException>(() =>
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
             {
-                service.GetCountries(filters);
+                await service.GetCountries(filters);
             });
             Assert.Equal("Aún no hay ciudades", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);

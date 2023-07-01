@@ -44,7 +44,7 @@ namespace ClothingStore.Test.ControllerTests
         }
 
         [Fact]
-        public void GetCountries_ReturnsCountriesDto()
+        public async Task GetCountries_ReturnsCountriesDto()
         {
             Country[] countries = new[]
              {
@@ -79,10 +79,10 @@ namespace ClothingStore.Test.ControllerTests
             };
 
             PagedList<Country> pageListServcieResponse = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
-            mockCountryService.Setup(s => s.GetCountries(filters)).Returns(pageListServcieResponse);
+            mockCountryService.Setup(s => s.GetCountries(filters)).ReturnsAsync(pageListServcieResponse);
             mapperMock.Setup(m => m.Map<IEnumerable<CountryDto>>(pageListServcieResponse)).Returns(countriesDto);            
 
-            IActionResult actionResult = controller.GetCountries(filters);
+            IActionResult actionResult = await controller.GetCountries(filters);
             OkObjectResult okResult = (OkObjectResult)actionResult;
 
             ApiResponse<IEnumerable<CountryDto>> returnedApiResponse = Assert.IsType<ApiResponse<IEnumerable<CountryDto>>>(okResult.Value);

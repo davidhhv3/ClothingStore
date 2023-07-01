@@ -30,12 +30,12 @@ namespace ClothingStore.Core.Services
             Country country= await CountryServiceHelpers.VerifyCityExistence(Id, _unitOfWork);
             return country;
         }
-        public PagedList<Country> GetCountries(CountryQueryFilter filters)
+        public async Task<PagedList<Country>> GetCountries(CountryQueryFilter filters)
         {
             filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
             filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            List<Country> countries = _unitOfWork.CountryRepository.GetAll().ToList();
-            if(countries.Count == 0 || countries == null)
+            List<Country> countries = (await _unitOfWork.CountryRepository.GetAll()).ToList();
+            if (countries.Count == 0 || countries == null)
                 throw new BusinessException("Aún no hay ciudades");
             PagedList<Country> pagedCountries = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
             return pagedCountries;

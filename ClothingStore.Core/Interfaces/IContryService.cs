@@ -6,7 +6,7 @@ namespace ClothingStore.Core.Interfaces
 {
     public interface IContryService
     {
-        PagedList<Country> GetCountries(CountryQueryFilter filters);
+        Task<PagedList<Country>> GetCountries(CountryQueryFilter filters);
 
         Task<Country> GetCountry(int Id);
 

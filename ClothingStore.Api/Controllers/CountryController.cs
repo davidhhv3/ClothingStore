@@ -32,9 +32,9 @@ namespace ClothingStore.Api.Controllers
         [HttpGet("GetCountries")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<CountryDto>>))]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public IActionResult GetCountries([FromQuery] CountryQueryFilter filters)
+        public async Task<IActionResult> GetCountries([FromQuery] CountryQueryFilter filters)
         {
-            var countries = _contryService.GetCountries(filters);
+            var countries = await _contryService.GetCountries(filters);
             var countriesDtos = _mapper.Map<IEnumerable<CountryDto>>(countries);
 
             var metadata = new Metadata
