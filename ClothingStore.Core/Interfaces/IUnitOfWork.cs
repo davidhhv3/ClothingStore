@@ -3,6 +3,8 @@
     public interface IUnitOfWork : IDisposable
     {
         ICountryRepository CountryRepository { get; }
+
+        IClientRepository ClientRepository { get; }
         ISecurityRepository SecurityRepository { get; }
         void SaveChanges();
         Task SaveChangesAsync();

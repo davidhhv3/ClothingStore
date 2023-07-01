@@ -14,6 +14,7 @@ namespace ClothingStore.Infrastructure.Data
         {
         }
         public virtual DbSet<Country> Country { get; set; }
+        public virtual DbSet<Client> Client { get; set; }
         public virtual DbSet<Security> Security { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
