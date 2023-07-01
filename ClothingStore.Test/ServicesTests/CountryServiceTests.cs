@@ -44,7 +44,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
         }
         [Fact]
-        public async Task DeleteCountry_ReturnLaCiudadNoEstáRegistrada()
+        public async Task DeleteCountry_ReturnElPaisNoEstáRegistrado()
         {
             // Arrange
             int id = 1;
@@ -55,7 +55,7 @@ namespace ClothingStore.Test.ServicesTests
             {
                 await service.DeleteCountry(id);
             });
-            Assert.Equal("La ciudad no está registrada", exception.Message);
+            Assert.Equal("El pais no está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(id), Times.Once);
         }
         [Fact]
@@ -67,7 +67,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(countryId)).ReturnsAsync(expectedCountry);
 
             // Act
-            Country result = await service.GetCountry(countryId);
+            Country? result = await service.GetCountry(countryId);
 
             // Assert
             Assert.NotNull(result);
@@ -75,7 +75,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(countryId), Times.Once);
         }
         [Fact]
-        public async Task GetCountry_ReturnLaCiudadNoEstaRegistrada()
+        public async Task GetCountry_ReturnElPaisNoEstaRegistrado()
         {
             // Arrange
             int countryId = 1;
@@ -86,7 +86,7 @@ namespace ClothingStore.Test.ServicesTests
             {
                 await service.GetCountry(countryId);
             });
-            Assert.Equal("La ciudad no está registrada", exception.Message);
+            Assert.Equal("El pais no está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(countryId), Times.Once);
         }
 
@@ -118,7 +118,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
-        public async Task GetCountries_ReturnAúnNoHayCiudades()
+        public async Task GetCountries_ReturnAúnNoHayPaises()
         {
             // Arrange
             CountryQueryFilter filters = new CountryQueryFilter
@@ -134,11 +134,11 @@ namespace ClothingStore.Test.ServicesTests
             {
                 await service.GetCountries(filters);
             });
-            Assert.Equal("Aún no hay ciudades", exception.Message);
+            Assert.Equal("Aún no hay paises registrados", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
-        public async Task InsertCountry_ReturnLaCiudadYaEstaRegistrada()
+        public async Task InsertCountry_ReturnElPaisYaEstaRegistrado()
         {
             // Arrange
             Country country = new Country { Id = 1, Name = "Country 1" };
@@ -149,7 +149,7 @@ namespace ClothingStore.Test.ServicesTests
             {
                 await service.InsertCountry(country);
             });
-            Assert.Equal("La ciudad ya está registrada", exception.Message);
+            Assert.Equal("El pais ya está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
         }
         [Fact]
@@ -184,7 +184,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
         }
         [Fact]
-        public async Task UpdateCountry_ReturnLaCiudadNoEstáRegistrada()
+        public async Task UpdateCountry_ReturnElPaisNoEstáRegistrado()
         {
             // Arrange
             Country country = new Country { Id = 1, Name = "Country 1" };
@@ -195,7 +195,7 @@ namespace ClothingStore.Test.ServicesTests
             {
                 await service.UpdateCountry(country);
             });
-            Assert.Equal("La ciudad no está registrada", exception.Message);
+            Assert.Equal("El pais no está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
 
         }

@@ -8,7 +8,7 @@ namespace ClothingStore.Core.Interfaces
     {
         Task<PagedList<Country>> GetCountries(CountryQueryFilter filters);
 
-        Task<Country> GetCountry(int Id);
+        Task<Country?> GetCountry(int Id);
 
         Task InsertCountry(Country country);
 

@@ -13,11 +13,10 @@ namespace ClothingStore.Core.Helpers
                 if (Name.Contains(word, StringComparison.OrdinalIgnoreCase))
                     throw new BusinessException("Contenido no permitido");
         }
-        internal static async Task<Country> VerifyCityExistence(int id, IUnitOfWork _unitOfWork)
+        internal static async Task<Country?> VerifyCityExistence(int id, IUnitOfWork _unitOfWork)
         {
             Country? country = await _unitOfWork.CountryRepository.GetById(id);
-            if (country == null)
-                throw new BusinessException("La ciudad no está registrada");
+            ObjectVerifier.VerifyExistence(country, "El pais no está registrado");
             return country;
         }
     }
