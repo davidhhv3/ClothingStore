@@ -46,7 +46,7 @@ namespace ClothingStore.Api.Controllers
                 HasNextPage = countries.HasNextPage,
                 HasPreviousPage = countries.HasPreviousPage,
             };
-            var response = new ApiResponse<IEnumerable<CountryDto>>(countriesDtos)
+            ApiResponse<IEnumerable<CountryDto>> response = new ApiResponse<IEnumerable<CountryDto>>(countriesDtos)
             {
                 Meta = metadata
             };           
@@ -58,12 +58,14 @@ namespace ClothingStore.Api.Controllers
         /// </summary>
         /// <param name="id">The ID of the country to retrieve</param>
         /// <returns></returns>
-        [HttpGet("GetCountry/{id}")]        
+        [HttpGet("GetCountry/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<CountryDto>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCountry(int id)
         {
             Country country = await _contryService.GetCountry(id);
             CountryDto countryDto = _mapper.Map<CountryDto>(country);
-            var response = new ApiResponse<CountryDto>(countryDto);
+            ApiResponse<CountryDto> response = new ApiResponse<CountryDto>(countryDto);
             return Ok(response);          
         }
 
@@ -73,6 +75,8 @@ namespace ClothingStore.Api.Controllers
         /// <param name="countryDto">Country data</param>
         /// <returns></returns>
         [HttpPost("CreateCountry")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<CountryDto>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> CreateCountry(CountryDto countryDto)
         {
             Country country = _mapper.Map<Country>(countryDto);
@@ -89,6 +93,8 @@ namespace ClothingStore.Api.Controllers
         /// <param name="countryDto">Updated country data</param>
         /// <returns></returns>
         [HttpPut("UpdateCountry")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<bool>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> UpdateCountry(int id, CountryDto countryDto)
         {
             Country country = _mapper.Map<Country>(countryDto);
@@ -104,6 +110,8 @@ namespace ClothingStore.Api.Controllers
         /// <param name="id">The ID of the country to delete</param>
         /// <returns></returns>
         [HttpDelete("DeleteCountry/{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<bool>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> DeleteCountry(int id)
         {
             bool result = await _contryService.DeleteCountry(id);
