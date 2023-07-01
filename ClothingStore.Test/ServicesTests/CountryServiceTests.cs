@@ -75,7 +75,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(countryId), Times.Once);
         }
         [Fact]
-        public async Task GetCountry_ReturnLaCiudadNoEstáRegistrada()
+        public async Task GetCountry_ReturnLaCiudadNoEstaRegistrada()
         {
             // Arrange
             int countryId = 1;
@@ -138,7 +138,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
-        public async Task InsertCountru_ReturnLaCiudadYaEstaRegistrada()
+        public async Task InsertCountry_ReturnLaCiudadYaEstaRegistrada()
         {
             // Arrange
             Country country = new Country { Id = 1, Name = "Country 1" };
@@ -153,7 +153,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
         }
         [Fact]
-        public async Task InsertCountru_ReturnContentNotAllowed()
+        public async Task InsertCountry_ReturnContentNotAllowed()
         {
             // Arrange
             Country country = new Country { Id = 1, Name = "Pechos" };

@@ -1,10 +1,12 @@
-﻿using ClothingStore.Core.Entities;
+﻿using ClothingStore.Core.CustomEntities;
+using ClothingStore.Core.Entities;
+using ClothingStore.Core.QueryFilters;
 
 namespace ClothingStore.Core.Interfaces
 {
     public interface IClientService
     {
-        //Task<PagedList<Client>> GetClients(CountryQueryFilter filters);
+        Task<PagedList<Client>> GetClients(ClientQueryFilter filters);
 
         Task<Client> GetClient(int Id);
 
