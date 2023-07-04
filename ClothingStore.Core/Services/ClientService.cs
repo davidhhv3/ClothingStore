@@ -43,6 +43,17 @@ namespace ClothingStore.Core.Services
             PagedList<Client> pagedClients = PagedList<Client>.Create(clients, filters.PageNumber, filters.PageSize);
             return pagedClients;
         }
+        public async Task<PagedList<Client>> GetClientsByCountry(ClientQueryFilter filters,int countryId)
+        {
+            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
+            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
+            List<Client> clients = (await _unitOfWork.ClientRepository.GetAll()).ToList();
+            if (clients.Count == 0 || clients == null)
+                throw new BusinessException("Aún no hay clientes registrados");
+            List<Client> clientsByCountry = clients.Where(c => c.Country == countryId).ToList();
+            PagedList<Client> pagedClients = PagedList<Client>.Create(clientsByCountry, filters.PageNumber, filters.PageSize);
+            return pagedClients;
+        }
 
         public async Task InsertCLient(Client client)
         {

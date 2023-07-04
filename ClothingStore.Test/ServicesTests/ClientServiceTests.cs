@@ -182,5 +182,42 @@ namespace ClothingStore.Test.ServicesTests
             Assert.Equal("El cliente no está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.ClientRepository.GetById(id), Times.Once);
         }
+        [Fact]
+        public async Task GetClientsByCountry_ReturnPageListClients()
+        {
+            // Arrange
+            ClientQueryFilter filters = new ClientQueryFilter
+            {
+                PageNumber = 1,
+                PageSize = 2
+            };
+            List<Client> clients = new List<Client>
+            {
+                new Client { Id = 1, Country = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, IdentificationNumber = 1111111111 },
+                new Client { Id = 2, Country = 1, Name = "Client 2", LastName = "LastName 2", Age = 15, IdentificationNumber = 1111111112 },
+                new Client { Id = 3, Country = 2, Name = "Client 3", LastName = "LastName 3", Age = 23, IdentificationNumber = 1111111113 },
+                new Client { Id = 4, Country = 2, Name = "Client 4", LastName = "LastName 4", Age = 34, IdentificationNumber = 1111111114 },
+            };
+            List<Client> expectedClients = new List<Client>
+            {
+                new Client { Id = 1, Country = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, IdentificationNumber = 1111111111 },
+                new Client { Id = 2, Country = 1, Name = "Client 2", LastName = "LastName 2", Age = 15, IdentificationNumber = 1111111112 },
+            };
+            mockUnitOfWork.Setup(uow => uow.ClientRepository.GetAll()).ReturnsAsync(clients);
+            var properties = typeof(Client).GetProperties();
+
+            // Act
+            PagedList<Client> resultClients = await _clientService.GetClientsByCountry(filters,1);
+
+            // Assert
+            for (int i = 0; i < 2; i++)
+            {
+                Client expectedClient = expectedClients[i];
+                Client resultClient = resultClients[i];                
+                for (int j = 0; j < properties.Length; j++)
+                    Assert.Equal(properties[j].GetValue(expectedClient), properties[j].GetValue(resultClient));
+            }
+            mockUnitOfWork.Verify(uow => uow.ClientRepository.GetAll(), Times.Once);
+        }
     }
 }
