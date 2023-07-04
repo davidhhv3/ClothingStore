@@ -9,13 +9,13 @@ using Moq;
 
 namespace ClothingStore.Test.ServicesTests
 {
-    public class ClietnServiceTests
+    public class ClientServiceTests
     {
         private readonly PaginationOptions _paginationOptions;
         private readonly Mock<IUnitOfWork> mockUnitOfWork;
         private readonly Mock<IOptions<PaginationOptions>> mockOptions;
         private readonly ClientService _clientService;
-        public ClietnServiceTests()
+        public ClientServiceTests()
         {
             mockUnitOfWork = new Mock<IUnitOfWork>();
             mockOptions = new Mock<IOptions<PaginationOptions>>();
