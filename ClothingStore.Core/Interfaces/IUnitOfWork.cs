@@ -5,8 +5,7 @@
         ICountryRepository CountryRepository { get; }
 
         IClientRepository ClientRepository { get; }
-        ISecurityRepository SecurityRepository { get; }
-        void SaveChanges();
+        ISecurityRepository SecurityRepository { get; }     
         Task SaveChangesAsync();
     }
 

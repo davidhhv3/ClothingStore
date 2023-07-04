@@ -138,6 +138,20 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetAll(), Times.Once);
         }
         [Fact]
+        public async Task InsertCountry_ReturnTrue()
+        {
+            // Arrange
+            Country country = new Country { Id = 1, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync((Country?)null);
+
+            // Act
+            bool response = await service.InsertCountry(country);
+
+            //Assert
+            Assert.True(response);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
+        }
+        [Fact]
         public async Task InsertCountry_ReturnElPaisYaEstaRegistrado()
         {
             // Arrange
@@ -151,20 +165,6 @@ namespace ClothingStore.Test.ServicesTests
             });
             Assert.Equal("El pais ya está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
-        }
-        [Fact]
-        public async Task InsertCountry_ReturnContentNotAllowed()
-        {
-            // Arrange
-            Country country = new Country { Id = 1, Name = "Pechos" };
-            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync((Country?)null);
-
-            // Act and Assert
-            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
-            {
-                await service.InsertCountry(country);
-            });
-            Assert.Equal("Contenido no permitido", exception.Message);         
         }
         [Fact]
         public async Task UpdateCountry_ReturnTrue()

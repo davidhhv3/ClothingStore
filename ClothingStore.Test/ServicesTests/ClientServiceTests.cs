@@ -33,7 +33,7 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Setup(uow => uow.ClientRepository.GetById(clientId)).ReturnsAsync(expectedClient);
 
             //// Act
-            Client result = await _clientService.GetClient(clientId);
+            Client? result = await _clientService.GetClient(clientId);
 
             //// Assert
             Assert.NotNull(result);

@@ -5,7 +5,6 @@ using ClothingStore.Core.Helpers;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
 using Microsoft.Extensions.Options;
-using System.Diagnostics.Metrics;
 
 namespace ClothingStore.Core.Services
 {
@@ -42,25 +41,22 @@ namespace ClothingStore.Core.Services
             return pagedCountries;
         }
 
-        public async Task InsertCountry(Country country)
+        public async Task<bool> InsertCountry(Country country)
         {                  
             Country? existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
             if (existingcountry != null)
-                throw new BusinessException("El pais ya está registrado");
-            if (country.Name != null)
-                CountryServiceHelpers.CheckForbiddenWords(country.Name);             
+                throw new BusinessException("El pais ya está registrado");                   
             await _unitOfWork.CountryRepository.Add(country);
-            await _unitOfWork.SaveChangesAsync();
+            await _unitOfWork.SaveChangesAsync();    
+            return true;
         }
         public async Task<bool> UpdateCountry(Country country)
         {
-            Country? existingcountry = await CountryServiceHelpers.VerifyCityExistence(country.Id, _unitOfWork);
-            if (country.Name != null)
-              CountryServiceHelpers.CheckForbiddenWords(country.Name); 
+            Country? existingcountry = await CountryServiceHelpers.VerifyCityExistence(country.Id, _unitOfWork);      
             if(existingcountry != null)
             {
                 existingcountry.Name = country.Name;
-                _unitOfWork.CountryRepository.Update(existingcountry);
+                await _unitOfWork.CountryRepository.Update(existingcountry);
             }           
             await _unitOfWork.SaveChangesAsync();
             return true;

@@ -10,7 +10,7 @@ namespace ClothingStore.Core.Interfaces
 
         Task<Country?> GetCountry(int Id);
 
-        Task InsertCountry(Country country);
+        Task<bool> InsertCountry(Country country);
 
         Task<bool> UpdateCountry(Country country);
 

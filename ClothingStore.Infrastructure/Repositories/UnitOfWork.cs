@@ -24,11 +24,6 @@ namespace ClothingStore.Infrastructure.Repositories
                 _context.Dispose();
         }
 
-        public void SaveChanges()
-        {
-            _context.SaveChanges();
-        }
-
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();

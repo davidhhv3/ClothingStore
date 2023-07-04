@@ -63,7 +63,7 @@ namespace ClothingStore.Api.Controllers
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> GetCountry(int id)
         {
-            Country country = await _contryService.GetCountry(id);
+            Country? country = await _contryService.GetCountry(id);
             CountryDto countryDto = _mapper.Map<CountryDto>(country);
             ApiResponse<CountryDto> response = new ApiResponse<CountryDto>(countryDto);
             return Ok(response);          

@@ -5,7 +5,6 @@ using ClothingStore.Core.Helpers;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
 using Microsoft.Extensions.Options;
-using System.Diagnostics.Metrics;
 
 namespace ClothingStore.Core.Services
 {
@@ -50,8 +49,6 @@ namespace ClothingStore.Core.Services
             Client? existingClient = await _unitOfWork.ClientRepository.GetById(client.Id);
             if (existingClient != null)
                 throw new BusinessException("El cliente ya está registrado");
-            if (client.Name != null)
-                CountryServiceHelpers.CheckForbiddenWords(client.Name);
             await _unitOfWork.ClientRepository.Add(client);
             await _unitOfWork.SaveChangesAsync();
         }
@@ -62,7 +59,7 @@ namespace ClothingStore.Core.Services
             if(existingClient != null)
             {
                 existingClient.Name = existingClient.Name;
-                _unitOfWork.ClientRepository.Update(existingClient);
+                await _unitOfWork.ClientRepository.Update(existingClient);
             }        
             await _unitOfWork.SaveChangesAsync();
             return true;

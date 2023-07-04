@@ -25,9 +25,9 @@ namespace ClothingStore.Infrastructure.Repositories
         {
             await _entities.AddAsync(entity);
         }
-        public void Update(T entity)
+        public async Task Update(T entity)
         {
-            _entities.Update(entity);
+            await Task.Run(() => _entities.Update(entity));
         }
         public async Task Delete(int id)
         {
