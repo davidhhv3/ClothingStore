@@ -103,19 +103,56 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.ClientRepository.GetAll(), Times.Once);
         }
         [Fact]
-        public async Task InsertCountru_ReturnElClienteYaEstaRegistrado()
+        public async Task GetClientsByCountry_ReturnPageListClients()
+        {
+            // Arrange
+            ClientQueryFilter filters = new ClientQueryFilter
+            {
+                PageNumber = 1,
+                PageSize = 2
+            };
+            List<Client> clients = new List<Client>
+            {
+                new Client { Id = 1, Country = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, IdentificationNumber = 1111111111 },
+                new Client { Id = 2, Country = 1, Name = "Client 2", LastName = "LastName 2", Age = 15, IdentificationNumber = 1111111112 },
+                new Client { Id = 3, Country = 2, Name = "Client 3", LastName = "LastName 3", Age = 23, IdentificationNumber = 1111111113 },
+                new Client { Id = 4, Country = 2, Name = "Client 4", LastName = "LastName 4", Age = 34, IdentificationNumber = 1111111114 },
+            };
+            List<Client> expectedClients = new List<Client>
+            {
+                new Client { Id = 1, Country = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, IdentificationNumber = 1111111111 },
+                new Client { Id = 2, Country = 1, Name = "Client 2", LastName = "LastName 2", Age = 15, IdentificationNumber = 1111111112 },
+            };
+            mockUnitOfWork.Setup(uow => uow.ClientRepository.GetAll()).ReturnsAsync(clients);
+            var properties = typeof(Client).GetProperties();
+
+            // Act
+            PagedList<Client> resultClients = await _clientService.GetClientsByCountry(filters, 1);
+
+            // Assert
+            for (int i = 0; i < 2; i++)
+            {
+                Client expectedClient = expectedClients[i];
+                Client resultClient = resultClients[i];
+                for (int j = 0; j < properties.Length; j++)
+                    Assert.Equal(properties[j].GetValue(expectedClient), properties[j].GetValue(resultClient));
+            }
+            mockUnitOfWork.Verify(uow => uow.ClientRepository.GetAll(), Times.Once);
+        }
+        [Fact]
+        public async Task InsertClient_ReturnElPaisNoEstáRegistrado()
         {
             // Arrange
             Client client = new Client { Id = 1, Country = 1, Name = "David", LastName = "Hernandez", Age = 30, IdentificationNumber = 1111111111 };
-            mockUnitOfWork.Setup(uow => uow.ClientRepository.GetById(client.Id)).ReturnsAsync(client);
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(client.Country)).ReturnsAsync((Country?)null);
 
             // Act and Assert
             var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
             {
                 await _clientService.InsertCLient(client);
             });
-            Assert.Equal("El cliente ya está registrado", exception.Message);
-            mockUnitOfWork.Verify(uow => uow.ClientRepository.GetById(client.Id), Times.Once);
+            Assert.Equal("El pais no está registrado", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(client.Country), Times.Once);
         }
         [Fact]
         public async Task UpdateClient_ReturnTrue()
@@ -133,6 +170,21 @@ namespace ClothingStore.Test.ServicesTests
             Assert.True(result);
             mockUnitOfWork.Verify(uow => uow.ClientRepository.Update(client), Times.Once);
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
+        }
+        [Fact]
+        public async Task UpdateClient_ReturnElPaisNoEstáRegistrado()
+        {
+            // Arrange
+            Client client = new Client { Id = 1, Country = 1, Name = "David", LastName = "Hernandez", Age = 30, IdentificationNumber = 1111111111 };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(client.Country)).ReturnsAsync((Country?)null);
+
+            // Act and Assert
+            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
+            {
+                await _clientService.UpdateClient(client);
+            });
+            Assert.Equal("El pais no está registrado", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(client.Country), Times.Once);
         }
         [Fact]
         public async Task UpdateClient_ReturnClienteNoRegistrado()
@@ -181,43 +233,6 @@ namespace ClothingStore.Test.ServicesTests
             });
             Assert.Equal("El cliente no está registrado", exception.Message);
             mockUnitOfWork.Verify(uow => uow.ClientRepository.GetById(id), Times.Once);
-        }
-        [Fact]
-        public async Task GetClientsByCountry_ReturnPageListClients()
-        {
-            // Arrange
-            ClientQueryFilter filters = new ClientQueryFilter
-            {
-                PageNumber = 1,
-                PageSize = 2
-            };
-            List<Client> clients = new List<Client>
-            {
-                new Client { Id = 1, Country = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, IdentificationNumber = 1111111111 },
-                new Client { Id = 2, Country = 1, Name = "Client 2", LastName = "LastName 2", Age = 15, IdentificationNumber = 1111111112 },
-                new Client { Id = 3, Country = 2, Name = "Client 3", LastName = "LastName 3", Age = 23, IdentificationNumber = 1111111113 },
-                new Client { Id = 4, Country = 2, Name = "Client 4", LastName = "LastName 4", Age = 34, IdentificationNumber = 1111111114 },
-            };
-            List<Client> expectedClients = new List<Client>
-            {
-                new Client { Id = 1, Country = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, IdentificationNumber = 1111111111 },
-                new Client { Id = 2, Country = 1, Name = "Client 2", LastName = "LastName 2", Age = 15, IdentificationNumber = 1111111112 },
-            };
-            mockUnitOfWork.Setup(uow => uow.ClientRepository.GetAll()).ReturnsAsync(clients);
-            var properties = typeof(Client).GetProperties();
-
-            // Act
-            PagedList<Client> resultClients = await _clientService.GetClientsByCountry(filters,1);
-
-            // Assert
-            for (int i = 0; i < 2; i++)
-            {
-                Client expectedClient = expectedClients[i];
-                Client resultClient = resultClients[i];                
-                for (int j = 0; j < properties.Length; j++)
-                    Assert.Equal(properties[j].GetValue(expectedClient), properties[j].GetValue(resultClient));
-            }
-            mockUnitOfWork.Verify(uow => uow.ClientRepository.GetAll(), Times.Once);
         }
     }
 }

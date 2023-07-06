@@ -34,22 +34,16 @@ namespace ClothingStore.Core.Services
         }
 
         public async Task<PagedList<Client>> GetClients(ClientQueryFilter filters)
-        {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            List<Client> clients  = (await _unitOfWork.ClientRepository.GetAll()).ToList();
-            if (clients.Count == 0 || clients == null)
-                throw new BusinessException("Aún no hay clientes registrados");
+        {       
+            filters = ClientServiceHelpers.SetValueFilter(filters, _paginationOptions);
+            List<Client> clients = await ClientServiceHelpers.VerifyClientsGetClients(_unitOfWork);
             PagedList<Client> pagedClients = PagedList<Client>.Create(clients, filters.PageNumber, filters.PageSize);
             return pagedClients;
         }
         public async Task<PagedList<Client>> GetClientsByCountry(ClientQueryFilter filters,int countryId)
         {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            List<Client> clients = (await _unitOfWork.ClientRepository.GetAll()).ToList();
-            if (clients.Count == 0 || clients == null)
-                throw new BusinessException("Aún no hay clientes registrados");
+            filters = ClientServiceHelpers.SetValueFilter(filters, _paginationOptions);
+            List<Client> clients = await ClientServiceHelpers.VerifyClientsGetClients(_unitOfWork);
             List<Client> clientsByCountry = clients.Where(c => c.Country == countryId).ToList();
             PagedList<Client> pagedClients = PagedList<Client>.Create(clientsByCountry, filters.PageNumber, filters.PageSize);
             return pagedClients;
@@ -57,15 +51,14 @@ namespace ClothingStore.Core.Services
 
         public async Task InsertCLient(Client client)
         {
-            Client? existingClient = await _unitOfWork.ClientRepository.GetById(client.Id);
-            if (existingClient != null)
-                throw new BusinessException("El cliente ya está registrado");
+            await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);               
             await _unitOfWork.ClientRepository.Add(client);
             await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<bool> UpdateClient(Client client)
         {
+            await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);      
             Client? existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork); 
             if(existingClient != null)
             {
