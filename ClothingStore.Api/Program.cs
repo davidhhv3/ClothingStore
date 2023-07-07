@@ -1,10 +1,13 @@
+using ClothingStore.Api;
 using ClothingStore.Infrastructure.Extensions;
 using ClothingStore.Infrastructure.Filters;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 using System.Text;
 
@@ -50,10 +53,26 @@ builder.Services.AddSwaggerGen(doc =>
 {
     doc.SwaggerDoc("v1", new OpenApiInfo { Title = "Clothing Store Api", Version = "v1" });
 
+
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     doc.IncludeXmlComments(xmlPath);
+
+    
+    doc.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
+                      Enter 'Bearer' [space] and then your token in the text input below.
+                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+    doc.OperationFilter<AuthOperationFilter>();
 });
+
+
 
 var app = builder.Build();
 

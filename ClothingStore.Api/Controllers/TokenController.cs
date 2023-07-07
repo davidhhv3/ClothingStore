@@ -3,6 +3,7 @@ using ClothingStore.Core.DTOs;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Infrastructure.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -11,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 
 namespace ClothingStore.Api.Controllers
-{
+{   
     [Route("api/[controller]")]
     [ApiController]
     public class TokenController : ControllerBase
