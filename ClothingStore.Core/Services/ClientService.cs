@@ -37,6 +37,8 @@ namespace ClothingStore.Core.Services
         {       
             filters = ClientServiceHelpers.SetValueFilter(filters, _paginationOptions);
             List<Client> clients = await ClientServiceHelpers.VerifyClientsGetClients(_unitOfWork);
+            if (clients.Count == 0 || clients == null)
+                throw new BusinessException("Aún no hay clientes registrados");
             PagedList<Client> pagedClients = PagedList<Client>.Create(clients, filters.PageNumber, filters.PageSize);
             return pagedClients;
         }
@@ -57,8 +59,7 @@ namespace ClothingStore.Core.Services
         }
 
         public async Task<bool> UpdateClient(Client client)
-        {
-            await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);      
+        {           
             Client? existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork); 
             if(existingClient != null)
             {
