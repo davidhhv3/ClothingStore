@@ -36,9 +36,7 @@ namespace ClothingStore.Core.Services
         public async Task<PagedList<Client>> GetClients(ClientQueryFilter filters)
         {       
             filters = ClientServiceHelpers.SetValueFilter(filters, _paginationOptions);
-            List<Client> clients = await ClientServiceHelpers.VerifyClientsGetClients(_unitOfWork);
-            if (clients.Count == 0 || clients == null)
-                throw new BusinessException("Aún no hay clientes registrados");
+            List<Client> clients = await ClientServiceHelpers.VerifyClientsGetClients(_unitOfWork);     
             PagedList<Client> pagedClients = PagedList<Client>.Create(clients, filters.PageNumber, filters.PageSize);
             return pagedClients;
         }

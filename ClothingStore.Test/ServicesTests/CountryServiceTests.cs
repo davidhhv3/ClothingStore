@@ -142,7 +142,7 @@ namespace ClothingStore.Test.ServicesTests
         {
             // Arrange
             Country country = new Country { Id = 1, Name = "Country 1" };
-            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync((Country?)null);
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync(country);
 
             // Act
             bool response = await service.InsertCountry(country);

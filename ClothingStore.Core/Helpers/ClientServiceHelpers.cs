@@ -22,7 +22,7 @@ namespace ClothingStore.Core.Helpers
         internal static async Task<List<Client>> VerifyClientsGetClients(IUnitOfWork _unitOfWork)
         {
             List<Client> clients = (await _unitOfWork.ClientRepository.GetAll()).ToList();      
-            ObjectVerifier.VerifyExistence(clients, "Aún no hay clientes registrados");
+            ObjectVerifier.VerifyExistence(clients, "Aún no hay clientes registrados",clients.Count());
             return clients;
         }
     }

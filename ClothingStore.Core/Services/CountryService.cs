@@ -32,20 +32,18 @@ namespace ClothingStore.Core.Services
         }
         public async Task<PagedList<Country>> GetCountries(CountryQueryFilter filters)
         {
-            filters.PageNumber = filters.PageNumber == 0 ? _paginationOptions.DefaultPageNumber : filters.PageNumber;
-            filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
-            List<Country> countries = (await _unitOfWork.CountryRepository.GetAll()).ToList();
-            if (countries.Count == 0 || countries == null)
-                throw new BusinessException("Aún no hay paises registrados");
+            filters = CountryServiceHelpers.SetValueFilter(filters, _paginationOptions);
+            List<Country> countries= await CountryServiceHelpers.VerifyCountriesGetCountries(_unitOfWork);
             PagedList<Country> pagedCountries = PagedList<Country>.Create(countries, filters.PageNumber, filters.PageSize);
             return pagedCountries;
         }
 
         public async Task<bool> InsertCountry(Country country)
-        {                  
-            Country? existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
-            if (existingcountry != null)
-                throw new BusinessException("El pais ya está registrado");                   
+        {
+            //Country? existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
+            //if (existingcountry != null)
+            //    throw new BusinessException("El pais ya está registrado");
+            await CountryServiceHelpers.VerifyCityExistence(country.Id, _unitOfWork);    
             await _unitOfWork.CountryRepository.Add(country);
             await _unitOfWork.SaveChangesAsync();    
             return true;
