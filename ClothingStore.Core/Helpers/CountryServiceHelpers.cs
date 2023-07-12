@@ -13,7 +13,7 @@ namespace ClothingStore.Core.Helpers
             filters.PageSize = filters.PageSize == 0 ? _paginationOptions.DefaultPageSize : filters.PageSize;
             return filters;
         }
-        internal static async Task<Country?> VerifyCityExistence(int id, IUnitOfWork _unitOfWork)
+        internal static async Task<Country?> VerifyCountrieExistence(int id, IUnitOfWork _unitOfWork)
         {
             Country? country = await _unitOfWork.CountryRepository.GetById(id);
             ObjectVerifier.VerifyExistence(country, "El pais no está registrado");

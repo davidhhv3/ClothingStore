@@ -20,14 +20,14 @@ namespace ClothingStore.Core.Services
         }  
         public async Task<bool> DeleteCountry(int id)
         {           
-            await CountryServiceHelpers.VerifyCityExistence(id, _unitOfWork);
+            await CountryServiceHelpers.VerifyCountrieExistence(id, _unitOfWork);
             await _unitOfWork.CountryRepository.Delete(id);
             await _unitOfWork.SaveChangesAsync();
             return true;
         }
         public async Task<Country?> GetCountry(int Id)
         {
-            Country? country = await CountryServiceHelpers.VerifyCityExistence(Id, _unitOfWork);
+            Country? country = await CountryServiceHelpers.VerifyCountrieExistence(Id, _unitOfWork);
             return country;
         }
         public async Task<PagedList<Country>> GetCountries(CountryQueryFilter filters)
@@ -46,7 +46,7 @@ namespace ClothingStore.Core.Services
         }
         public async Task<bool> UpdateCountry(Country country)
         {
-            Country? existingcountry = await CountryServiceHelpers.VerifyCityExistence(country.Id, _unitOfWork);      
+            Country? existingcountry = await CountryServiceHelpers.VerifyCountrieExistence(country.Id, _unitOfWork);      
             if(existingcountry != null)
             {
                 existingcountry.Name = country.Name;

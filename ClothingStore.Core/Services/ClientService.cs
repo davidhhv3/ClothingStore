@@ -51,7 +51,7 @@ namespace ClothingStore.Core.Services
 
         public async Task<bool> InsertCLient(Client client)
         {
-            await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);               
+            await CountryServiceHelpers.VerifyCountrieExistence(client.Country, _unitOfWork);               
             await _unitOfWork.ClientRepository.Add(client);
             await _unitOfWork.SaveChangesAsync();
             return true;
@@ -59,7 +59,7 @@ namespace ClothingStore.Core.Services
 
         public async Task<bool> UpdateClient(Client client)
         {
-            await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);
+            await CountryServiceHelpers.VerifyCountrieExistence(client.Country, _unitOfWork);
             Client? existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork); 
             if(existingClient != null)
             {

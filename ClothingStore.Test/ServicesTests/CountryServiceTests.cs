@@ -143,13 +143,14 @@ namespace ClothingStore.Test.ServicesTests
             // Arrange
             Country country = new Country { Id = 1, Name = "Country 1" };
             mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync(country);
+            mockUnitOfWork.Setup(uow => uow.SaveChangesAsync()).Verifiable();
 
             // Act
             bool response = await service.InsertCountry(country);
 
             //Assert
-            Assert.True(response);
-            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
+            Assert.True(response);      
+            mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
         }
         [Fact]
         public async Task UpdateCountry_ReturnTrue()
