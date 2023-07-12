@@ -140,6 +140,26 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.ClientRepository.GetAll(), Times.Once);
         }
         [Fact]
+        public async Task InsertClient_ReturnTrue()
+        {
+            // Arrange
+            Client client = new Client { Id = 1, Country = 1, Name = "David", LastName = "Hernandez", Age = 30, IdentificationNumber = 1111111111 };
+            Country country = new Country { Id = 1, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(client.Country)).ReturnsAsync(country);
+            mockUnitOfWork.Setup(uow => uow.ClientRepository.Add(client)).Verifiable();
+            mockUnitOfWork.Setup(uow => uow.SaveChangesAsync()).Verifiable();
+
+            // Act
+            bool response = await _clientService.InsertCLient(client);
+
+            // Assert
+            Assert.True(response);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(client.Country), Times.Once);
+            mockUnitOfWork.Verify(uow => uow.ClientRepository.Add(client), Times.Once);
+            mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
+        }
+        
+        [Fact]
         public async Task InsertClient_ReturnElPaisNoEstáRegistrado()
         {
             // Arrange
@@ -159,6 +179,8 @@ namespace ClothingStore.Test.ServicesTests
         {
             // Arrange
             Client client = new Client { Id = 1, Country = 1, Name = "David", LastName = "Hernandez", Age = 30, IdentificationNumber = 1111111111 };
+            Country country = new Country { Id = 1, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(client.Country)).ReturnsAsync(country);
             mockUnitOfWork.Setup(uow => uow.ClientRepository.GetById(1)).ReturnsAsync(client);
             mockUnitOfWork.Setup(uow => uow.ClientRepository.Update(client)).Verifiable();
             mockUnitOfWork.Setup(uow => uow.SaveChangesAsync()).Verifiable();
@@ -168,6 +190,8 @@ namespace ClothingStore.Test.ServicesTests
 
             // Assert
             Assert.True(result);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(client.Country), Times.Once);
+            mockUnitOfWork.Verify(uow => uow.ClientRepository.GetById(1), Times.Once);
             mockUnitOfWork.Verify(uow => uow.ClientRepository.Update(client), Times.Once);
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
         }
@@ -190,7 +214,9 @@ namespace ClothingStore.Test.ServicesTests
         public async Task UpdateClient_ReturnClienteNoRegistrado()
         {
             // Arrange
-            Client client = new Client { Id = 1, Country = 1, Name = "David", LastName = "Hernandez", Age = 30, IdentificationNumber = 1111111111 };          
+            Client client = new Client { Id = 1, Country = 1, Name = "David", LastName = "Hernandez", Age = 30, IdentificationNumber = 1111111111 };
+            Country country = new Country { Id = 1, Name = "Country 1" };
+            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(client.Country)).ReturnsAsync(country);
             mockUnitOfWork.Setup(uow => uow.ClientRepository.GetById(client.Id)).ReturnsAsync((Client?)null);
 
             // Act and Assert
@@ -199,6 +225,7 @@ namespace ClothingStore.Test.ServicesTests
                 await _clientService.UpdateClient(client);
             });
             Assert.Equal("El cliente no está registrado", exception.Message);
+            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(client.Country), Times.Once);
             mockUnitOfWork.Verify(uow => uow.ClientRepository.GetById(client.Id), Times.Once);
         }
         [Fact]
@@ -216,6 +243,7 @@ namespace ClothingStore.Test.ServicesTests
 
             // Assert
             Assert.True(result);
+            mockUnitOfWork.Verify(uow => uow.ClientRepository.GetById(clientId), Times.Once);
             mockUnitOfWork.Verify(uow => uow.ClientRepository.Delete(clientId), Times.Once);
             mockUnitOfWork.Verify(uow => uow.SaveChangesAsync(), Times.Once);
         }

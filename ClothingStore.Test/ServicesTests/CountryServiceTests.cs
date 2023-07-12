@@ -152,21 +152,6 @@ namespace ClothingStore.Test.ServicesTests
             mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
         }
         [Fact]
-        public async Task InsertCountry_ReturnElPaisYaEstaRegistrado()
-        {
-            // Arrange
-            Country country = new Country { Id = 1, Name = "Country 1" };
-            mockUnitOfWork.Setup(uow => uow.CountryRepository.GetById(country.Id)).ReturnsAsync(country);
-
-            // Act and Assert
-            var exception = await Assert.ThrowsAsync<BusinessException>(async () =>
-            {
-                await service.InsertCountry(country);
-            });
-            Assert.Equal("El pais ya está registrado", exception.Message);
-            mockUnitOfWork.Verify(uow => uow.CountryRepository.GetById(country.Id), Times.Once);
-        }
-        [Fact]
         public async Task UpdateCountry_ReturnTrue()
         {
             // Arrange

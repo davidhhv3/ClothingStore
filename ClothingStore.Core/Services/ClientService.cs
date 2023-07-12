@@ -49,15 +49,17 @@ namespace ClothingStore.Core.Services
             return pagedClients;
         }
 
-        public async Task InsertCLient(Client client)
+        public async Task<bool> InsertCLient(Client client)
         {
             await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);               
             await _unitOfWork.ClientRepository.Add(client);
             await _unitOfWork.SaveChangesAsync();
+            return true;
         }
 
         public async Task<bool> UpdateClient(Client client)
-        {           
+        {
+            await CountryServiceHelpers.VerifyCityExistence(client.Country, _unitOfWork);
             Client? existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork); 
             if(existingClient != null)
             {

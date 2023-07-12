@@ -39,11 +39,7 @@ namespace ClothingStore.Core.Services
         }
 
         public async Task<bool> InsertCountry(Country country)
-        {
-            //Country? existingcountry = await _unitOfWork.CountryRepository.GetById(country.Id);
-            //if (existingcountry != null)
-            //    throw new BusinessException("El pais ya está registrado");
-            await CountryServiceHelpers.VerifyCityExistence(country.Id, _unitOfWork);    
+        {             
             await _unitOfWork.CountryRepository.Add(country);
             await _unitOfWork.SaveChangesAsync();    
             return true;

@@ -10,7 +10,7 @@ namespace ClothingStore.Core.Interfaces
 
         Task<Client?> GetClient(int Id);
 
-        Task InsertCLient(Client client);
+        Task<bool> InsertCLient(Client client);
 
         Task<bool> UpdateClient(Client client);
 
