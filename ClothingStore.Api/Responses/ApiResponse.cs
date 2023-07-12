@@ -11,5 +11,4 @@ namespace ClothingStore.Api.Responses
         public T Data { get; set; }
         public Metadata Meta { get; set; }
     }
-
 }

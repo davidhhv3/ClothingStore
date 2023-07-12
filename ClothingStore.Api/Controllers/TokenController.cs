@@ -1,18 +1,14 @@
-﻿using ClothingStore.Api.Responses;
-using ClothingStore.Core.DTOs;
-using ClothingStore.Core.Entities;
+﻿using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Infrastructure.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
 namespace ClothingStore.Api.Controllers
-{   
+{
     [Route("api/[controller]")]
     [ApiController]
     public class TokenController : ControllerBase
@@ -46,22 +42,27 @@ namespace ClothingStore.Api.Controllers
         }
         private async Task<(bool, Security)> IsValidUser(UserLogin login)
         {
+            bool isValid = false;
             var user = await _securityService.GetLoginByCredentials(login);
-            var isValid = _passwordService.Check(user.Password, login.Password);
+            if(user.Password != null && login.Password != null)
+              isValid = _passwordService.Check(user.Password, login.Password);
             return (isValid, user);
         }
         private string GenerateToken(Security security)
         {
             //Header
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Authentication:SecretKey"]));
+            string? SecretKey = _configuration["Authentication:SecretKey"];
+            SymmetricSecurityKey? symmetricSecurityKey = null;
+            if (SecretKey != null)
+              symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
             var header = new JwtHeader(signingCredentials);
 
-            //Claims
+            //Claims            
             var claims = new[]
             {
-               new Claim(ClaimTypes.Name, security.UserName),
-                new Claim("User", security.User),
+                new Claim(ClaimTypes.Name, security.UserName ?? ""),
+                new Claim("User", security.User ?? ""),
                 new Claim(ClaimTypes.Role, security.Role.ToString()),
             };
 
