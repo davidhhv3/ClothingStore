@@ -2,9 +2,9 @@
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace ClothingStore.Api
+namespace ClothingStore.Infrastructure
 {
-    class AuthOperationFilter : IOperationFilter
+    public class AuthOperationFilter : IOperationFilter
     {
         private bool hasAuthorize;
         public void Apply(OpenApiOperation operation, OperationFilterContext context)
