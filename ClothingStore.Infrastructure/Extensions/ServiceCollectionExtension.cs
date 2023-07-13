@@ -6,6 +6,7 @@ using ClothingStore.Infrastructure.Interfaces;
 using ClothingStore.Infrastructure.Options;
 using ClothingStore.Infrastructure.Repositories;
 using ClothingStore.Infrastructure.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -58,6 +59,12 @@ namespace ClothingStore.Infrastructure.Extensions
                 doc.OperationFilter<AuthOperationFilter>();
             });
             return services;
+        }
+        public static IApplicationBuilder UseSwaggerWithUI(this IApplicationBuilder app)
+        {
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            return app;
         }
     }
 }
