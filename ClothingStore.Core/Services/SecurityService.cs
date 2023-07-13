@@ -1,4 +1,5 @@
 ﻿using ClothingStore.Core.Entities;
+using ClothingStore.Core.Exceptions;
 using ClothingStore.Core.Interfaces;
 
 namespace ClothingStore.Core.Services
@@ -11,10 +12,14 @@ namespace ClothingStore.Core.Services
         {
             _unitOfWork = unitOfWork;
         }
-
         public async Task<Security> GetLoginByCredentials(UserLogin userLogin)
         {
-            return await _unitOfWork.SecurityRepository.GetLoginByCredentials(userLogin);
+            Security? result = await _unitOfWork.SecurityRepository.GetLoginByCredentials(userLogin);
+            if (result == null)
+            {                 
+                throw new BusinessException("Error al iniciar sesión");
+            }
+            return result;
         }
 
         public async Task RegisterUser(Security security)
