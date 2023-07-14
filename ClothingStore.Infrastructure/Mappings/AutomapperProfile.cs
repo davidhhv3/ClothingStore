@@ -10,7 +10,7 @@ namespace ClothingStore.Infrastructure.Mappings
         {
             CreateMap<Country, CountryDto>().ReverseMap();
             CreateMap<Security, SecurityDto>().ReverseMap();
+            CreateMap<Client, ClientDto>().ReverseMap();
         }
     }
-
 }

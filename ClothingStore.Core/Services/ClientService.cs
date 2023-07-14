@@ -63,7 +63,10 @@ namespace ClothingStore.Core.Services
             Client? existingClient = await ClientServiceHelpers.VerifyClientExistence(client.Id, _unitOfWork); 
             if(existingClient != null)
             {
-                existingClient.Name = existingClient.Name;
+                existingClient.Name = client.Name;
+                existingClient.LastName = client.LastName;
+                existingClient.Age = client.Age;
+                existingClient.Country = client.Country;
                 await _unitOfWork.ClientRepository.Update(existingClient);
             }        
             await _unitOfWork.SaveChangesAsync();

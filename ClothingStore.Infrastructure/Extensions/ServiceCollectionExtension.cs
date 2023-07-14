@@ -34,6 +34,7 @@ namespace ClothingStore.Infrastructure.Extensions
         {
             services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             services.AddTransient<IContryService, CountryService>();
+            services.AddTransient<IClientService, ClientService>();
             services.AddTransient<ISecurityService, SecurityService>();
             services.AddSingleton<IPasswordService, PasswordService>();
             services.AddTransient<IUnitOfWork, UnitOfWork>();
