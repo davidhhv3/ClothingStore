@@ -8,6 +8,8 @@ namespace ClothingStore.Core.Interfaces
     {
         Task<PagedList<Client>> GetClients(ClientQueryFilter filters);
 
+        Task<PagedList<Client>> GetClientsByCountry(ClientQueryFilter filters,int countryId);
+
         Task<Client?> GetClient(int Id);
 
         Task<bool> InsertCLient(Client client);

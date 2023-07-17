@@ -1,6 +1,5 @@
 ﻿using ClothingStore.Core.CustomEntities;
 using ClothingStore.Core.Entities;
-using ClothingStore.Core.Exceptions;
 using ClothingStore.Core.Helpers;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;

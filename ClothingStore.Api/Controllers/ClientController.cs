@@ -5,8 +5,6 @@ using ClothingStore.Core.DTOs;
 using ClothingStore.Core.Entities;
 using ClothingStore.Core.Interfaces;
 using ClothingStore.Core.QueryFilters;
-using ClothingStore.Core.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -36,6 +34,35 @@ namespace ClothingStore.Api.Controllers
         public async Task<IActionResult> GetClients([FromQuery] ClientQueryFilter filters)
         {
             PagedList<Client> clients = await _clientService.GetClients(filters);
+            IEnumerable<ClientDto> clientsDtos = _mapper.Map<IEnumerable<ClientDto>>(clients);
+            var metadata = new Metadata
+            {
+                TotalCount = clients.TotalCount,
+                PageSize = clients.PageSize,
+                CurrentPage = clients.CurrentPage,
+                TotalPages = clients.TotalPages,
+                HasNextPage = clients.HasNextPage,
+                HasPreviousPage = clients.HasPreviousPage,
+            };
+            ApiResponse<IEnumerable<ClientDto>> response = new ApiResponse<IEnumerable<ClientDto>>(clientsDtos)
+            {
+                Meta = metadata
+            };
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Retrieve all clients by country
+        /// </summary>
+        /// <param name="filters">Filters to apply</param>
+        /// /// <param name="countryId">Country ID</param>
+        /// <returns></returns>
+        [HttpGet("GetClientsByCountry")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<IEnumerable<ClientDto>>))]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        public async Task<IActionResult> GetClientsBycountry([FromQuery] ClientQueryFilter filters,int countryId)
+        {
+            PagedList<Client> clients = await _clientService.GetClientsByCountry(filters, countryId);
             IEnumerable<ClientDto> clientsDtos = _mapper.Map<IEnumerable<ClientDto>>(clients);
             var metadata = new Metadata
             {
