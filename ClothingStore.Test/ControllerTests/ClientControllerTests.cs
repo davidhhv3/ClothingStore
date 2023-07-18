@@ -144,5 +144,58 @@ namespace ClothingStore.Test.ControllerTests
                 Assert.Equal(properties[i].GetValue(expectedApiResponse.Meta), properties[i].GetValue(returnedApiResponse.Meta));
             Assert.IsType<ApiResponse<IEnumerable<ClientDto>>>(returnedApiResponse);
         }
+        [Fact]
+        public async Task CreateClient_returnClientDto()
+        {
+            // Arrange 
+            Client client = new Client { Id = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, Country = 1, IdentificationNumber = 1234567890};
+            ClientDto clientDto = new ClientDto{ Id = 1,  Name = "Client 1", LastName = "LastName 1", Age = 30, Country = 1};           
+            ApiResponse<ClientDto> expectedApiResponse = new ApiResponse<ClientDto>(clientDto);
+            mapperMock.Setup(m => m.Map<Client>(clientDto)).Returns(client);
+            mapperMock.Setup(m => m.Map<ClientDto>(client)).Returns(clientDto);
+
+            // Act   
+            IActionResult actionResult = await controller.CreateClient(client);
+            OkObjectResult okResult = (OkObjectResult)actionResult;
+            ApiResponse<ClientDto> returnedApiResponse = Assert.IsType<ApiResponse<ClientDto>>(okResult.Value);
+            // Assert
+            mockClientService.Verify(service => service.InsertCLient(client), Times.Once);
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+        }
+        [Fact]
+        public async Task UpdateClient_ReturnTrue()
+        {
+            // Arrange      
+            Client client = new Client { Id = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, Country = 1, IdentificationNumber = 1234567890 };
+            ClientDto clientDto = new ClientDto { Id = 1, Name = "Client 1", LastName = "LastName 1", Age = 30, Country = 1 };
+            ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);
+            mockClientService.Setup(service => service.UpdateClient(client)).ReturnsAsync(true);
+            mapperMock.Setup(m => m.Map<Client>(clientDto)).Returns(client);          
+
+            // Act
+            var result = await controller.UpdateClient(1, clientDto);
+            OkObjectResult okResult = result as OkObjectResult ?? throw new ArgumentNullException(nameof(result));
+            ApiResponse<bool> returnedApiResponse = Assert.IsType<ApiResponse<bool>>(okResult.Value);
+
+            //Assert
+            mockClientService.Verify(service => service.UpdateClient(client), Times.Once);
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+        }
+        [Fact]
+        public async Task DeleteClient_ReturnTrue()
+        {
+            // Arrange
+            ApiResponse<bool> expectedApiResponse = new ApiResponse<bool>(true);
+            mockClientService.Setup(service => service.DeleteClient(1)).ReturnsAsync(true);
+
+            // Act
+            var result = await controller.DeleteClient(1);
+            OkObjectResult okResult = result as OkObjectResult ?? throw new ArgumentNullException(nameof(result));
+            ApiResponse<bool> returnedApiResponse = Assert.IsType<ApiResponse<bool>>(okResult.Value);
+
+            // Assert
+            mockClientService.Verify(service => service.DeleteClient(1), Times.Once);
+            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+        }
     }
 }
