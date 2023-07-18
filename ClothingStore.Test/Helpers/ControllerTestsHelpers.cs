@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClothingStore.Test.Helpers
 {
-    internal static class CountryControllerTestsHelpers
+    internal static class ControllerTestsHelpers
     {
         public static void checkResponseApi<T>(OkObjectResult okResult, ApiResponse<T> returnedApiResponse, ApiResponse<T> expectedApiResponse)
         {

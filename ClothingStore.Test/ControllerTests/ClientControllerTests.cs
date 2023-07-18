@@ -9,12 +9,6 @@ using ClothingStore.Core.QueryFilters;
 using ClothingStore.Test.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClothingStore.Test.ControllerTests
 {
@@ -46,7 +40,7 @@ namespace ClothingStore.Test.ControllerTests
             ApiResponse<ClientDto> returnedApiResponse = Assert.IsType<ApiResponse<ClientDto>>(okResult.Value);
 
             mockClientService.Verify(service => service.GetClient(1), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
         }
         [Fact]
         public async Task GetClients_ReturnsClientsDto()
@@ -160,7 +154,7 @@ namespace ClothingStore.Test.ControllerTests
             ApiResponse<ClientDto> returnedApiResponse = Assert.IsType<ApiResponse<ClientDto>>(okResult.Value);
             // Assert
             mockClientService.Verify(service => service.InsertCLient(client), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
         }
         [Fact]
         public async Task UpdateClient_ReturnTrue()
@@ -179,7 +173,7 @@ namespace ClothingStore.Test.ControllerTests
 
             //Assert
             mockClientService.Verify(service => service.UpdateClient(client), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
         }
         [Fact]
         public async Task DeleteClient_ReturnTrue()
@@ -195,7 +189,7 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockClientService.Verify(service => service.DeleteClient(1), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);
         }
     }
 }

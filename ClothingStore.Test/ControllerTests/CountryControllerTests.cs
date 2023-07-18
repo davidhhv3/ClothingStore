@@ -40,7 +40,7 @@ namespace ClothingStore.Test.ControllerTests
             ApiResponse<CountryDto> returnedApiResponse = Assert.IsType<ApiResponse<CountryDto>>(okResult.Value);
 
             mockCountryService.Verify(service => service.GetCountry(1), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);         
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);         
         }
 
         [Fact]
@@ -108,7 +108,7 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockCountryService.Verify(service => service.InsertCountry(country), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);            
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);            
         }
         [Fact]
         public async Task UpdateCountry_ReturnTrue()
@@ -125,7 +125,7 @@ namespace ClothingStore.Test.ControllerTests
 
             //Assert
             mockCountryService.Verify(service => service.UpdateCountry(country), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);           
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);           
         }
         [Fact]
         public async Task DeleteCountry_ReturnTrue()
@@ -141,7 +141,7 @@ namespace ClothingStore.Test.ControllerTests
 
             // Assert
             mockCountryService.Verify(service => service.DeleteCountry(1), Times.Once);
-            CountryControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
+            ControllerTestsHelpers.checkResponseApi(okResult, returnedApiResponse, expectedApiResponse);       
         } 
     }
 }
